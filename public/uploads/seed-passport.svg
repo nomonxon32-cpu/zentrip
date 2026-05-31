@@ -1,0 +1,11 @@
+<svg width="900" height="600" viewBox="0 0 900 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="600" rx="40" fill="#0F172A"/>
+  <rect x="48" y="48" width="804" height="504" rx="28" fill="#F8FAFC"/>
+  <circle cx="182" cy="224" r="78" fill="#E2E8F0"/>
+  <rect x="298" y="154" width="372" height="24" rx="12" fill="#CBD5E1"/>
+  <rect x="298" y="210" width="266" height="20" rx="10" fill="#CBD5E1"/>
+  <rect x="298" y="266" width="300" height="20" rx="10" fill="#CBD5E1"/>
+  <rect x="112" y="386" width="660" height="20" rx="10" fill="#CBD5E1"/>
+  <rect x="112" y="438" width="560" height="20" rx="10" fill="#CBD5E1"/>
+  <text x="108" y="110" fill="#0F172A" font-family="Segoe UI, Arial" font-size="34" font-weight="700">Republic of Uzbekistan Passport</text>
+</svg>

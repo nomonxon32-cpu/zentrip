@@ -1,0 +1,19 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#111827"/>
+  <rect x="52" y="52" width="1096" height="796" rx="36" fill="url(#paint0_linear_4_4)"/>
+  <path d="M248 550C248 482 301 429 369 429H820C888 429 942 483 942 551V578H248V550Z" fill="#E5E7EB"/>
+  <path d="M386 429C422 366 490 328 568 328H749C806 328 858 365 887 429H386Z" fill="#F9FAFB"/>
+  <circle cx="390" cy="610" r="66" fill="#111827"/>
+  <circle cx="807" cy="610" r="66" fill="#111827"/>
+  <circle cx="390" cy="610" r="27" fill="#D1D5DB"/>
+  <circle cx="807" cy="610" r="27" fill="#D1D5DB"/>
+  <text x="194" y="200" fill="#A5F3FC" font-family="Segoe UI, Arial" font-size="26" font-weight="700">UzCar Rent</text>
+  <text x="194" y="278" fill="#FFFFFF" font-family="Segoe UI, Arial" font-size="64" font-weight="800">Hyundai Elantra</text>
+  <text x="194" y="340" fill="#CFFAFE" font-family="Segoe UI, Arial" font-size="30">Fergana • Economy • Automatic</text>
+  <defs>
+    <linearGradient id="paint0_linear_4_4" x1="88" y1="120" x2="1088" y2="808" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0891B2"/>
+      <stop offset="1" stop-color="#67E8F9" stop-opacity="0.14"/>
+    </linearGradient>
+  </defs>
+</svg>

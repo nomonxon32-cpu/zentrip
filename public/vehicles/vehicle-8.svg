@@ -1,0 +1,19 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#111827"/>
+  <rect x="52" y="52" width="1096" height="796" rx="36" fill="url(#paint0_linear_8_8)"/>
+  <path d="M258 548C258 480 312 426 380 426H808C876 426 930 480 930 548V575H258V548Z" fill="#E5E7EB"/>
+  <path d="M397 426C432 364 499 327 577 327H729C789 327 843 364 873 426H397Z" fill="#F9FAFB"/>
+  <circle cx="390" cy="603" r="66" fill="#111827"/>
+  <circle cx="794" cy="603" r="66" fill="#111827"/>
+  <circle cx="390" cy="603" r="28" fill="#D1D5DB"/>
+  <circle cx="794" cy="603" r="28" fill="#D1D5DB"/>
+  <text x="194" y="200" fill="#FBCFE8" font-family="Segoe UI, Arial" font-size="26" font-weight="700">UzCar Rent</text>
+  <text x="194" y="278" fill="#FFFFFF" font-family="Segoe UI, Arial" font-size="64" font-weight="800">Daewoo Gentra</text>
+  <text x="194" y="340" fill="#FCE7F3" font-family="Segoe UI, Arial" font-size="30">Fergana • Sedan • Manual</text>
+  <defs>
+    <linearGradient id="paint0_linear_8_8" x1="88" y1="120" x2="1088" y2="802" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DB2777"/>
+      <stop offset="1" stop-color="#F9A8D4" stop-opacity="0.16"/>
+    </linearGradient>
+  </defs>
+</svg>

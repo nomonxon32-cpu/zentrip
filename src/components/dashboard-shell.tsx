@@ -1,0 +1,46 @@
+import Link from "next/link";
+
+import { cn } from "@/lib/utils";
+
+export function DashboardShell({
+  title,
+  description,
+  links,
+  backAction,
+  children,
+}: {
+  title: string;
+  description: string;
+  links: Array<{ label: string; href: string; active?: boolean }>;
+  backAction?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-8">
+      <aside className="surface-card space-y-3 rounded-[2rem] p-4 dark:bg-slate-900">
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={cn(
+              "block rounded-2xl px-4 py-3 text-sm font-semibold transition",
+              link.active
+                ? "sidebar-link-active"
+                : "sidebar-link",
+            )}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </aside>
+      <section className="space-y-6">
+        {backAction ? <div>{backAction}</div> : null}
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">{title}</h1>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500 dark:text-slate-400">{description}</p>
+        </div>
+        {children}
+      </section>
+    </div>
+  );
+}

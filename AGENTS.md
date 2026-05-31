@@ -1,0 +1,25 @@
+# UzCar Rent Project Notes
+
+- Stack: Next.js App Router, TypeScript, Tailwind CSS, Prisma, SQLite for local development, custom JWT cookie auth, Zod, React Hook Form.
+- Commands:
+  - `pnpm install`
+  - `cp .env.example .env`
+  - `pnpm prisma generate`
+  - `pnpm prisma migrate dev`
+  - `pnpm prisma db seed`
+  - `pnpm dev`
+- Roles:
+  - `ADMIN`
+  - `OWNER`
+  - `RENTER`
+- Core business rules:
+  - Rental period max is 30 days.
+  - Approved renter KYC is required for booking.
+  - Approved owner KYC is required before submitting listings for review.
+  - Listings must confirm OSAGO coverage.
+  - Overlapping bookings and blocked dates are not bookable.
+  - All marketplace payments are mocked.
+- Prototype uploads live in `public/uploads`.
+- Local database file lives at `prisma/dev.db`.
+- `pnpm db:setup` remains available as a convenience shortcut for local schema sync and seeding.
+- When changing booking logic, update `src/lib/pricing.ts`, `src/lib/availability.ts`, and tests together.

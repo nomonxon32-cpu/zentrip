@@ -1,0 +1,19 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#111827"/>
+  <rect x="52" y="52" width="1096" height="796" rx="36" fill="url(#paint0_linear_6_6)"/>
+  <path d="M248 548C248 480 302 426 370 426H813C881 426 935 480 935 548V575H248V548Z" fill="#E5E7EB"/>
+  <path d="M392 426C432 364 497 327 575 327H734C789 327 842 363 871 426H392Z" fill="#F9FAFB"/>
+  <circle cx="385" cy="603" r="66" fill="#111827"/>
+  <circle cx="799" cy="603" r="66" fill="#111827"/>
+  <circle cx="385" cy="603" r="28" fill="#D1D5DB"/>
+  <circle cx="799" cy="603" r="28" fill="#D1D5DB"/>
+  <text x="194" y="200" fill="#FCA5A5" font-family="Segoe UI, Arial" font-size="26" font-weight="700">UzCar Rent</text>
+  <text x="194" y="278" fill="#FFFFFF" font-family="Segoe UI, Arial" font-size="64" font-weight="800">BYD Han EV</text>
+  <text x="194" y="340" fill="#FECACA" font-family="Segoe UI, Arial" font-size="30">Samarkand • Electric • Automatic</text>
+  <defs>
+    <linearGradient id="paint0_linear_6_6" x1="88" y1="120" x2="1088" y2="802" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DC2626"/>
+      <stop offset="1" stop-color="#FCA5A5" stop-opacity="0.16"/>
+    </linearGradient>
+  </defs>
+</svg>

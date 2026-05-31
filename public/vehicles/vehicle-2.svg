@@ -1,0 +1,19 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#111827"/>
+  <rect x="52" y="52" width="1096" height="796" rx="36" fill="url(#paint0_linear_2_2)"/>
+  <path d="M274 540C274 474 327 421 393 421H768C834 421 887 474 887 540V565H274V540Z" fill="#E5E7EB"/>
+  <path d="M395 421C428 362 489 326 560 326H714C770 326 822 362 850 421H395Z" fill="#F9FAFB"/>
+  <circle cx="402" cy="592" r="66" fill="#111827"/>
+  <circle cx="775" cy="592" r="66" fill="#111827"/>
+  <circle cx="402" cy="592" r="28" fill="#D1D5DB"/>
+  <circle cx="775" cy="592" r="28" fill="#D1D5DB"/>
+  <text x="198" y="198" fill="#A7F3D0" font-family="Segoe UI, Arial" font-size="26" font-weight="700">UzCar Rent</text>
+  <text x="198" y="278" fill="#FFFFFF" font-family="Segoe UI, Arial" font-size="64" font-weight="800">Toyota Camry</text>
+  <text x="198" y="338" fill="#D1FAE5" font-family="Segoe UI, Arial" font-size="30">Samarkand • Premium • Automatic</text>
+  <defs>
+    <linearGradient id="paint0_linear_2_2" x1="94" y1="120" x2="1110" y2="808" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#059669"/>
+      <stop offset="1" stop-color="#34D399" stop-opacity="0.16"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,19 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#020617"/>
+  <rect x="52" y="52" width="1096" height="796" rx="36" fill="url(#paint0_linear_3_3)"/>
+  <path d="M262 542C262 474 316 420 384 420H795C863 420 918 475 918 543V570H262V542Z" fill="#E2E8F0"/>
+  <path d="M394 420C427 359 491 322 565 322H723C786 322 842 361 872 420H394Z" fill="#F8FAFC"/>
+  <circle cx="392" cy="604" r="67" fill="#020617"/>
+  <circle cx="787" cy="604" r="67" fill="#020617"/>
+  <circle cx="392" cy="604" r="28" fill="#CBD5E1"/>
+  <circle cx="787" cy="604" r="28" fill="#CBD5E1"/>
+  <text x="194" y="200" fill="#BFDBFE" font-family="Segoe UI, Arial" font-size="26" font-weight="700">UzCar Rent</text>
+  <text x="194" y="278" fill="#FFFFFF" font-family="Segoe UI, Arial" font-size="64" font-weight="800">Kia Sportage</text>
+  <text x="194" y="340" fill="#DBEAFE" font-family="Segoe UI, Arial" font-size="30">Bukhara • SUV • Automatic</text>
+  <defs>
+    <linearGradient id="paint0_linear_3_3" x1="92" y1="114" x2="1082" y2="806" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1D4ED8"/>
+      <stop offset="1" stop-color="#60A5FA" stop-opacity="0.16"/>
+    </linearGradient>
+  </defs>
+</svg>

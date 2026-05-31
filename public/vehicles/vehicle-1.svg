@@ -1,0 +1,20 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#0F172A"/>
+  <rect x="52" y="52" width="1096" height="796" rx="36" fill="url(#paint0_linear_1_1)"/>
+  <path d="M286 536C286 470 339 417 405 417H756C822 417 877 470 877 536V563H286V536Z" fill="#E2E8F0"/>
+  <path d="M407 417C439 355 502 316 573 316H694C754 316 807 355 836 417H407Z" fill="#F8FAFC" fill-opacity="0.96"/>
+  <circle cx="404" cy="592" r="64" fill="#0F172A"/>
+  <circle cx="766" cy="592" r="64" fill="#0F172A"/>
+  <circle cx="404" cy="592" r="29" fill="#CBD5E1"/>
+  <circle cx="766" cy="592" r="29" fill="#CBD5E1"/>
+  <rect x="205" y="164" width="222" height="50" rx="25" fill="#FFFFFF" fill-opacity="0.12"/>
+  <text x="238" y="197" fill="#E2E8F0" font-family="Segoe UI, Arial" font-size="26" font-weight="700">UzCar Rent</text>
+  <text x="205" y="272" fill="#FFFFFF" font-family="Segoe UI, Arial" font-size="64" font-weight="800">Chevrolet Cobalt</text>
+  <text x="205" y="334" fill="#DBEAFE" font-family="Segoe UI, Arial" font-size="30">Tashkent • Sedan • Automatic</text>
+  <defs>
+    <linearGradient id="paint0_linear_1_1" x1="104" y1="120" x2="1079" y2="784" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#38BDF8" stop-opacity="0.18"/>
+    </linearGradient>
+  </defs>
+</svg>
