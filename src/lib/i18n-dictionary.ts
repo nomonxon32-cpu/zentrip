@@ -134,7 +134,7 @@ export const dictionaries = {
     welcomeBack: "Welcome back",
     loginHeading: "Log in to manage trips, listings, and approvals.",
     loginDescription:
-      "Use the demo accounts from the README or sign in with your own registered owner or renter profile.",
+      "Sign in to access your trips, bookings, listings, and account approvals.",
     needAccount: "Need an account?",
     registerHere: "Register here",
     signedInSuccess: "Signed in successfully",
@@ -408,7 +408,7 @@ export const dictionaries = {
     welcomeBack: "Qaytganingizdan xursandmiz",
     loginHeading: "Safarlar, e'lonlar va tasdiqlarni boshqarish uchun tizimga kiring.",
     loginDescription:
-      "README dagi demo akkauntlardan foydalaning yoki o'zingizning egasi yoki ijarachi profilingiz bilan kiring.",
+      "Safarlar, bronlar, e'lonlar va akkaunt tasdiqlariga kirish uchun tizimga kiring.",
     needAccount: "Akkaunt kerakmi?",
     registerHere: "Bu yerda ro'yxatdan o'ting",
     signedInSuccess: "Muvaffaqiyatli kirildi",
@@ -682,7 +682,7 @@ export const dictionaries = {
     welcomeBack: "С возвращением",
     loginHeading: "Войдите, чтобы управлять поездками, объявлениями и подтверждениями.",
     loginDescription:
-      "Используйте демо-аккаунты из README или войдите в свой профиль владельца или арендатора.",
+      "Войдите, чтобы получить доступ к своим поездкам, бронированиям, объявлениям и подтверждениям аккаунта.",
     needAccount: "Нужен аккаунт?",
     registerHere: "Зарегистрируйтесь здесь",
     signedInSuccess: "Вход выполнен",

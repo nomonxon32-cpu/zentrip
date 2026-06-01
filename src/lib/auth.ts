@@ -15,9 +15,9 @@ type SessionPayload = {
 };
 
 function getJwtSecret() {
-  const secret = process.env.AUTH_SECRET;
+  const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET ?? process.env.JWT_SECRET;
   if (!secret) {
-    throw new Error("AUTH_SECRET is not configured.");
+    throw new Error("AUTH_SECRET, NEXTAUTH_SECRET, or JWT_SECRET must be configured.");
   }
 
   return new TextEncoder().encode(secret);
