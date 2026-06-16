@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star, Users } from "lucide-react";
+import { Sparkles, Star, Users } from "lucide-react";
 
 import { FavoriteButton } from "@/components/favorite-button";
 import { useLocale } from "@/components/providers";
@@ -129,11 +129,18 @@ export function CarCard({
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <div className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-300">
-              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-              <span className="font-semibold">{vehicle.averageRating?.toFixed(1) ?? labels.newLabel}</span>
-              <span className="text-slate-400 dark:text-slate-500">({vehicle.reviewCount ?? 0})</span>
-            </div>
+            {vehicle.reviewCount && vehicle.reviewCount > 0 ? (
+              <div className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                <span className="font-semibold">{vehicle.averageRating?.toFixed(1)}</span>
+                <span className="text-slate-400 dark:text-slate-500">({vehicle.reviewCount})</span>
+              </div>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-xs font-bold uppercase tracking-[0.12em] text-sky-700 dark:bg-sky-950 dark:text-sky-300">
+                <Sparkles className="h-3 w-3" />
+                {labels.newLabel}
+              </span>
+            )}
             <p className="text-slate-500 dark:text-slate-400">
               {labels.deposit} {formatCurrency(vehicle.depositAmount)}
             </p>

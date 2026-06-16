@@ -1,5 +1,6 @@
 import { VehicleStatus } from "@prisma/client";
-import { ShieldCheck, Star } from "lucide-react";
+import { BadgeCheck, Lock, ShieldCheck, Star } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BackButton } from "@/components/back-button";
@@ -8,9 +9,9 @@ import { CarGallery } from "@/components/car-gallery";
 import { ReviewCard } from "@/components/review-card";
 import { StatusBadge } from "@/components/status-badge";
 import { getDisabledDateIntervals } from "@/lib/availability";
-import { getCurrentLocale, getDictionary } from "@/lib/i18n";
+import { getCategoryLabel, getCurrentLocale, getDictionary, getFuelTypeLabel, getTransmissionLabel } from "@/lib/i18n";
 import { getVehicleDetail } from "@/lib/queries";
-import { formatCurrency } from "@/lib/utils";
+import { approximateArea, formatCurrency, formatDate, maskPlateNumber } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -67,7 +68,7 @@ export default async function CarDetailPage({
                 {vehicle.make} {vehicle.model}
               </h1>
               <p className="mt-2 text-base text-slate-500 dark:text-slate-400">
-                {vehicle.year} / {vehicle.category} / {vehicle.transmission} / {vehicle.fuelType}
+                {vehicle.year} / {getCategoryLabel(locale, vehicle.category)} / {getTransmissionLabel(locale, vehicle.transmission)} / {getFuelTypeLabel(locale, vehicle.fuelType)}
               </p>
             </div>
             <div className="text-right">
@@ -90,10 +91,23 @@ export default async function CarDetailPage({
             <div className="mt-5 grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2">
               <Spec label={labels.seats} value={vehicle.seats} />
               <Spec label={labels.mileagePerDay} value={`${vehicle.mileageLimitPerDay} km`} />
-              <Spec label="Plate" value={vehicle.plateNumber} />
-              <Spec label="Address" value={vehicle.address} />
-              <Spec label="OSAGO" value={vehicle.hasOsago ? "Confirmed" : "Missing"} />
-              <Spec label="CASCO" value={vehicle.hasCasco ? "Available" : "Not included"} />
+              <Spec label={labels.category} value={getCategoryLabel(locale, vehicle.category)} />
+              <Spec label={labels.transmission} value={getTransmissionLabel(locale, vehicle.transmission)} />
+              <Spec label={labels.fuelType} value={getFuelTypeLabel(locale, vehicle.fuelType)} />
+              <Spec label={labels.pickupArea} value={approximateArea(vehicle.city, vehicle.address)} />
+              <Spec label={labels.plate} value={maskPlateNumber(vehicle.plateNumber)} muted locked />
+            </div>
+            <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              {labels.exactLocationAfterApproval}
+            </p>
+
+            <div className="mt-6 border-t border-slate-200 pt-5 dark:border-slate-800">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{labels.insurance}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <InsuranceBadge label={labels.osago} active={vehicle.hasOsago} activeLabel={labels.included} inactiveLabel={labels.notIncluded} />
+                <InsuranceBadge label={labels.casco} active={vehicle.hasCasco} activeLabel={labels.included} inactiveLabel={labels.notIncluded} />
+              </div>
             </div>
           </div>
           <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950">
@@ -102,21 +116,21 @@ export default async function CarDetailPage({
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-lg font-semibold text-slate-950 dark:text-slate-50">{vehicle.owner.name}</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{vehicle.owner.city}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {vehicle.owner.city} · {labels.memberSince} {formatDate(vehicle.owner.createdAt, "MMM yyyy")}
+                  </p>
                 </div>
                 <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
                   <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  {ownerAverageRating ? ownerAverageRating.toFixed(1) : labels.newLabel}
+                  {ownerAverageRating ? ownerAverageRating.toFixed(1) : labels.newOnZentrip}
                 </div>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                <ShieldCheck className="h-4 w-4" />
-                {locale === "uz"
-                  ? "Faol e'lonlar uchun egasi tasdiqlangan bo'lishi kerak"
-                  : locale === "ru"
-                    ? "Для размещения требуется подтвержденный владелец"
-                    : "Owner verification required for listings"}
-              </div>
+              {vehicle.owner.kycStatus === "APPROVED" ? (
+                <div className="inline-flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                  <BadgeCheck className="h-4 w-4" />
+                  {labels.verifiedOwner} · {labels.identityVerifiedKyc}
+                </div>
+              ) : null}
               <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">{vehicle.description}</p>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{labels.rules}</p>
@@ -126,15 +140,33 @@ export default async function CarDetailPage({
           </div>
         </div>
 
+        <div className="rounded-[2rem] border border-emerald-200 bg-emerald-50/60 p-6 dark:border-emerald-900 dark:bg-emerald-950/30">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="inline-flex items-center gap-2 text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">
+              <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              {labels.protectionTitle}
+            </h2>
+            <Link href="/trust" className="text-sm font-semibold text-emerald-700 underline underline-offset-4 dark:text-emerald-300">
+              {labels.learnAboutSafety}
+            </Link>
+          </div>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+            {[labels.trustIdentityVerified, labels.trustRefundableDeposit, labels.trustSecureCheckout].map((item) => (
+              <li key={item} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200">
+                <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950">
           <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.reviews}</h2>
           <div className="mt-6 grid gap-4">
             {vehicle.reviews.length ? (
               vehicle.reviews.map((review) => <ReviewCard key={review.id} review={review} />)
             ) : (
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                {locale === "uz" ? "Bu avtomobil uchun hali sharh yo'q." : locale === "ru" ? "Для этого авто пока нет отзывов." : "No reviews yet for this car."}
-              </p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{labels.noReviewsYetShort}</p>
             )}
           </div>
         </div>
@@ -181,11 +213,50 @@ function readQueryValue(value?: string | string[]) {
   return typeof value === "string" ? value : undefined;
 }
 
-function Spec({ label, value }: { label: string; value: string | number }) {
+function Spec({
+  label,
+  value,
+  muted = false,
+  locked = false,
+}: {
+  label: string;
+  value: string | number;
+  muted?: boolean;
+  locked?: boolean;
+}) {
   return (
     <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-900">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{label}</p>
-      <p className="mt-2 font-semibold text-slate-900 dark:text-slate-50">{value}</p>
+      <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+        {locked ? <Lock className="h-3 w-3" /> : null}
+        {label}
+      </p>
+      <p className={`mt-2 font-semibold ${muted ? "text-slate-400 dark:text-slate-500" : "text-slate-900 dark:text-slate-50"}`}>
+        {value}
+      </p>
     </div>
+  );
+}
+
+function InsuranceBadge({
+  label,
+  active,
+  activeLabel,
+  inactiveLabel,
+}: {
+  label: string;
+  active: boolean;
+  activeLabel: string;
+  inactiveLabel: string;
+}) {
+  return (
+    <span
+      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+        active
+          ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+          : "border-slate-200 bg-slate-100 text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
+      }`}
+    >
+      {label}: {active ? activeLabel : inactiveLabel}
+    </span>
   );
 }

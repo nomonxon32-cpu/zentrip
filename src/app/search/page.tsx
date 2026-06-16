@@ -5,6 +5,7 @@ import { Building2, MapPinned, Plane, Sparkles, Truck, WalletCards } from "lucid
 import { CarCard } from "@/components/car-card";
 import { CarNameSearch } from "@/components/car-name-search";
 import { EmptyState } from "@/components/empty-state";
+import { FilterDisclosure } from "@/components/filter-disclosure";
 import { QuickFilterChips } from "@/components/quick-filter-chips";
 import {
   CITIES,
@@ -136,10 +137,13 @@ export default async function SearchPage({
 
   return (
     <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[290px_1fr] lg:px-8">
-      <aside className="surface-card h-fit rounded-[2rem] p-6 dark:bg-slate-900">
-        <h1 className="text-2xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.searchCarsTitle}</h1>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{labels.searchCarsDescription}</p>
-        <form className="mt-6 space-y-4">
+      <aside className="surface-card h-fit rounded-[2rem] p-4 sm:p-6 dark:bg-slate-900">
+        <div className="hidden lg:block">
+          <h1 className="text-2xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.searchCarsTitle}</h1>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{labels.searchCarsDescription}</p>
+        </div>
+        <FilterDisclosure label={labels.filter}>
+        <form className="space-y-4 lg:mt-6">
           <Field label={labels.whereLabel}>
             <input
               name="location"
@@ -221,6 +225,7 @@ export default async function SearchPage({
             {labels.applyFilters}
           </button>
         </form>
+        </FilterDisclosure>
       </aside>
 
       <section className="space-y-6">

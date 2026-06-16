@@ -128,8 +128,8 @@ export function DateRangePicker({
   }
 
   return (
-    <div className="surface-card w-full overflow-hidden rounded-[2rem] border p-5 dark:bg-slate-900">
-      <div className="rounded-3xl border border-slate-200 bg-white p-5 text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50">
+    <div className="surface-card w-full overflow-hidden rounded-[2rem] border p-3 sm:p-5 dark:bg-slate-900">
+      <div className="rounded-3xl border border-slate-200 bg-white p-3 text-slate-950 sm:p-5 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50">
         <div className="mb-4 flex items-center justify-between gap-3">
           <button
             type="button"
@@ -152,7 +152,7 @@ export function DateRangePicker({
           </button>
         </div>
 
-        <div className="grid grid-cols-7 gap-2 text-center">
+        <div className="grid grid-cols-7 gap-1 text-center sm:gap-2">
           {WEEKDAY_LABELS.map((label) => (
             <div key={label} className="text-xs font-semibold text-slate-500 dark:text-slate-400">
               {label}
@@ -160,7 +160,7 @@ export function DateRangePicker({
           ))}
 
           {leadingEmptyDays.map((_, index) => (
-            <div key={`empty-${index}`} className="h-10 w-10" />
+            <div key={`empty-${index}`} className="aspect-square w-full" />
           ))}
 
           {monthDays.map((date) => {
@@ -182,7 +182,7 @@ export function DateRangePicker({
                 onClick={() => handleSelect(date)}
                 disabled={blocked}
                 className={cn(
-                  "h-10 w-10 rounded-xl text-sm font-semibold transition",
+                  "flex aspect-square w-full items-center justify-center rounded-xl text-sm font-semibold transition",
                   blocked &&
                     "cursor-not-allowed bg-transparent text-slate-300 opacity-60 dark:bg-transparent dark:text-slate-600",
                   !blocked &&

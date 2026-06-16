@@ -259,7 +259,16 @@ export async function getVehicleDetail(id: string) {
         orderBy: { sortOrder: "asc" },
       },
       owner: {
-        include: {
+        // Only expose non-sensitive owner fields to the public detail page.
+        // Never include email, phone, or passwordHash here.
+        select: {
+          id: true,
+          name: true,
+          city: true,
+          avatarUrl: true,
+          isSuspended: true,
+          createdAt: true,
+          kycStatus: true,
           reviewsReceived: {
             select: { rating: true },
           },

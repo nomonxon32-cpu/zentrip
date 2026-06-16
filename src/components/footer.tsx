@@ -26,8 +26,8 @@ export async function Footer() {
           </p>
           <div className="flex flex-col gap-2">
             <Link href="/search">{labels.browseCars}</Link>
-            <Link href="/dashboard/owner/listings/new">{labels.becomeHost}</Link>
-            <Link href="/dashboard/kyc">{labels.verification}</Link>
+            <Link href="/host">{labels.becomeHost}</Link>
+            <Link href="/trust">{labels.trust}</Link>
           </div>
         </div>
         <div className="space-y-3">

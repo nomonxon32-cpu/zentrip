@@ -41,6 +41,39 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Masks a vehicle plate number for public display. Keeps the leading region
+ * code (e.g. "01") visible and hides the rest so the full plate is only ever
+ * revealed to a renter after the owner approves a booking.
+ */
+export function maskPlateNumber(plate?: string | null) {
+  const value = plate?.trim();
+  if (!value) {
+    return "•• ••• ••";
+  }
+
+  const region = value.slice(0, 2);
+  return `${region} ••• ••`;
+}
+
+/**
+ * Returns an approximate, privacy-safe location label for a listing. We expose
+ * only the city plus (when present) the first address segment such as a
+ * district, never the exact street address, before a booking is confirmed.
+ */
+export function approximateArea(city: string, address?: string | null) {
+  const firstSegment = address?.split(",")[0]?.trim();
+  if (firstSegment && firstSegment.toLowerCase() !== city.toLowerCase()) {
+    // Avoid leaking precise data like house numbers from the first segment.
+    const hasStreetNumber = /\d{1,4}/.test(firstSegment);
+    if (!hasStreetNumber && firstSegment.length <= 28) {
+      return `${firstSegment}, ${city}`;
+    }
+  }
+
+  return city;
+}
+
 export function slugify(value: string) {
   return value
     .toLowerCase()

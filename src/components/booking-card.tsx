@@ -5,6 +5,7 @@ import { addMonths, format } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BookingType } from "@prisma/client";
+import { ShieldCheck } from "lucide-react";
 
 import { DateRangePicker } from "@/components/date-range-picker";
 import { PriceBreakdown } from "@/components/price-breakdown";
@@ -115,12 +116,12 @@ export function BookingCard({
           };
 
   return (
-    <div className="surface-card w-full overflow-hidden space-y-5 rounded-[2rem] p-6 dark:bg-slate-900">
+    <div className="surface-card w-full overflow-hidden space-y-5 rounded-[2rem] p-4 sm:p-6 dark:bg-slate-900">
       <div className="flex items-baseline justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Instant estimate</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{labels.instantEstimate}</p>
           <p className="text-2xl font-black tracking-tight text-slate-950 dark:text-slate-50">
-            {monthlyMode ? monthlyLabels.title : "Book this car"}
+            {monthlyMode ? monthlyLabels.title : labels.bookThisCar}
           </p>
           {monthlyMode ? (
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{monthlyLabels.description}</p>
@@ -197,15 +198,21 @@ export function BookingCard({
         disabled={!summary}
         className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition"
       >
-        {monthlyMode ? monthlyLabels.action : "Book now"}
+        {monthlyMode ? monthlyLabels.action : labels.bookNow}
       </button>
       <p className="text-center text-xs text-slate-500 dark:text-slate-400">
-        {summary ? "Need owner details first? Message inside the booking after checkout." : "Select available travel dates to continue."}
+        {summary ? labels.ownerDetailsAfterCheckout : labels.selectDatesToContinue}
       </p>
+      {summary ? (
+        <p className="flex items-center justify-center gap-2 text-center text-xs font-medium text-emerald-700 dark:text-emerald-300">
+          <ShieldCheck className="h-3.5 w-3.5" />
+          {labels.depositRefundableNote}
+        </p>
+      ) : null}
       <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
-        <p className="font-semibold">KYC approval is required before booking can be confirmed.</p>
+        <p className="font-semibold">{labels.kycRequiredBeforeBooking}</p>
         <Link href="/dashboard/kyc" className="mt-2 inline-flex text-sm font-semibold text-amber-900 underline underline-offset-4 transition hover:text-amber-700 dark:text-amber-200 dark:hover:text-amber-100">
-          Complete KYC before booking
+          {labels.completeKycBeforeBooking}
         </Link>
       </div>
     </div>

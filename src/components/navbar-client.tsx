@@ -113,7 +113,7 @@ function HomepageNavbar({
                 <Link href={hostHref} className={menuLinkClass}>
                   {labels.becomeHost}
                 </Link>
-                <Link href="/dashboard/kyc" className={cn(menuLinkClass, "flex items-center gap-2")}>
+                <Link href="/trust" className={cn(menuLinkClass, "flex items-center gap-2")}>
                   <ShieldCheck className="h-4 w-4 text-emerald-500" />
                   {labels.trust}
                 </Link>
@@ -191,16 +191,45 @@ function DefaultNavbar({
           <Link href={hostHref} className="transition hover:text-slate-950 dark:hover:text-slate-50">
             {labels.becomeHost}
           </Link>
-          <Link href="/dashboard/kyc" className="inline-flex items-center gap-2 transition hover:text-slate-950 dark:hover:text-slate-50">
+          <Link href="/trust" className="inline-flex items-center gap-2 transition hover:text-slate-950 dark:hover:text-slate-50">
             <ShieldCheck className="h-4 w-4 text-emerald-500" />
             {labels.trust}
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <LanguageSwitcher />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden items-center gap-3 md:flex">
+            <ThemeToggle />
+            <LanguageSwitcher />
+          </div>
           <UserMenu user={user} stats={dropdownStats} labels={labels} />
+
+          <details className="group relative lg:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-center rounded-full border border-slate-200 bg-white p-3 text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:hover:border-slate-700 dark:hover:bg-slate-900">
+              <Menu className="h-5 w-5" />
+            </summary>
+            <div className="absolute right-0 top-full z-40 mt-3 w-72 max-w-[calc(100vw-2rem)] rounded-3xl border border-slate-200 bg-white p-4 text-slate-950 shadow-xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:shadow-black/30">
+              <div className="space-y-1">
+                <Link href="/" className={menuLinkClass}>
+                  {labels.home}
+                </Link>
+                <Link href="/search" className={menuLinkClass}>
+                  {labels.search}
+                </Link>
+                <Link href={hostHref} className={menuLinkClass}>
+                  {labels.becomeHost}
+                </Link>
+                <Link href="/trust" className={cn(menuLinkClass, "flex items-center gap-2")}>
+                  <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                  {labels.trust}
+                </Link>
+              </div>
+              <div className="mt-3 flex items-center gap-2 border-t border-slate-200 pt-3 md:hidden dark:border-slate-800">
+                <ThemeToggle />
+                <LanguageSwitcher />
+              </div>
+            </div>
+          </details>
         </div>
       </div>
     </header>
