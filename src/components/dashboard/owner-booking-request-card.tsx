@@ -24,15 +24,15 @@ export function OwnerBookingRequestCard({
   if (compact) {
     return (
       <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+        <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
           {cover ? (
             <img
               src={cover}
               alt={`${booking.vehicle.make} ${booking.vehicle.model}`}
-              className="h-40 w-full object-cover"
+              className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-40 items-center justify-center text-sm font-semibold text-slate-500 dark:text-slate-400">
+            <div className="flex h-full items-center justify-center p-4 text-center text-sm font-semibold text-slate-500 dark:text-slate-400">
               {labels.noPhotosUploaded}
             </div>
           )}
@@ -67,16 +67,16 @@ export function OwnerBookingRequestCard({
 
   return (
     <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-      <div className="grid gap-5 md:grid-cols-[220px_1fr]">
-        <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
+      <div className="grid gap-5 md:grid-cols-[220px_1fr] md:items-start">
+        <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
           {cover ? (
             <img
               src={cover}
               alt={`${booking.vehicle.make} ${booking.vehicle.model}`}
-              className="h-40 w-full object-cover"
+              className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-40 items-center justify-center text-sm font-semibold text-slate-500 dark:text-slate-400">
+            <div className="flex h-full items-center justify-center p-4 text-center text-sm font-semibold text-slate-500 dark:text-slate-400">
               {labels.noPhotosUploaded}
             </div>
           )}
