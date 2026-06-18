@@ -178,15 +178,14 @@ export function CheckoutForm({
             body: JSON.stringify(payload),
           });
           const payloadJson = (await response.json()) as { error?: string; bookingId?: string };
-          if (!response.ok) {
-            throw new Error(payloadJson.error ?? labels.paymentFailed);
+          if (!response.ok || !payloadJson.bookingId) {
+            throw new Error(payloadJson.error ?? labels.bookingFailed);
           }
 
-          toast.success(labels.bookingRequested);
+          toast.success(labels.bookingRequestSent);
           router.push(`/booking-confirmed/${payloadJson.bookingId}`);
-          router.refresh();
         } catch (error) {
-          toast.error(error instanceof Error ? error.message : labels.paymentFailed);
+          toast.error(error instanceof Error ? error.message : labels.bookingFailed);
         } finally {
           setIsSubmitting(false);
         }

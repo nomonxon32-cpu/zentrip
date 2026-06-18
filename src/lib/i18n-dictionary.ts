@@ -258,8 +258,8 @@ export const dictionaries = {
     priceBreakdown: "Price breakdown",
     platformServiceFee: "Platform service fee (12%)",
     deliveryFee: "Delivery fee",
-    refundableDepositHold: "Refundable deposit hold",
-    totalPayable: "Total payable",
+    refundableDepositHold: "Refundable deposit (due at pickup)",
+    totalPayable: "Estimated total",
     daysLabel: "days",
     kycPageTitle: "Verification center",
     kycPageDescription:
@@ -332,6 +332,7 @@ export const dictionaries = {
     carBooked: "Your car has been booked",
     carBookedBody: "Payment will be made in cash at pickup.",
     safeTrips: "Safe trips!",
+    bookingFailed: "We couldn't create the booking. Please try again.",
   },
   uz: {
     appName: APP_NAME,
@@ -573,8 +574,8 @@ export const dictionaries = {
     priceBreakdown: "Narx tafsiloti",
     platformServiceFee: "Platforma xizmati (12%)",
     deliveryFee: "Yetkazib berish narxi",
-    refundableDepositHold: "Qaytariladigan depozit blokirovkasi",
-    totalPayable: "Jami to'lov",
+    refundableDepositHold: "Qaytariladigan depozit (olishda)",
+    totalPayable: "Taxminiy jami",
     daysLabel: "kun",
     kycPageTitle: "Tasdiqlash markazi",
     kycPageDescription:
@@ -647,6 +648,7 @@ export const dictionaries = {
     carBooked: "Avtomobilingiz band qilindi",
     carBookedBody: "To'lov olish vaqtida naqd amalga oshiriladi.",
     safeTrips: "Xayrli safar!",
+    bookingFailed: "Bronni yaratib bo'lmadi. Iltimos, qayta urinib ko'ring.",
   },
   ru: {
     appName: APP_NAME,
@@ -888,8 +890,8 @@ export const dictionaries = {
     priceBreakdown: "Разбивка цены",
     platformServiceFee: "Сервисный сбор платформы (12%)",
     deliveryFee: "Стоимость доставки",
-    refundableDepositHold: "Возвратный депозит",
-    totalPayable: "Итого к оплате",
+    refundableDepositHold: "Возвратный депозит (при получении)",
+    totalPayable: "Предварительный итог",
     daysLabel: "дней",
     kycPageTitle: "Центр проверки",
     kycPageDescription:
@@ -962,6 +964,7 @@ export const dictionaries = {
     carBooked: "Ваш автомобиль забронирован",
     carBookedBody: "Оплата будет произведена наличными при получении.",
     safeTrips: "Счастливого пути!",
+    bookingFailed: "Не удалось создать бронирование. Попробуйте ещё раз.",
   },
 } as const;
 

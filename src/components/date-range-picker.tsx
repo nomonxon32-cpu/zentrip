@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   addMonths,
   differenceInCalendarDays,
@@ -48,12 +48,20 @@ export function DateRangePicker({
   });
   const [currentMonth, setCurrentMonth] = useState<Date>(startOfMonth(initialFrom ?? today));
 
+  // Keep the latest onChange in a ref so the effect below only re-runs when the
+  // selected range actually changes. Depending on `onChange` directly would loop
+  // forever whenever a parent passes an inline callback (e.g. the checkout form).
+  const onChangeRef = useRef(onChange);
   useEffect(() => {
-    onChange?.({
+    onChangeRef.current = onChange;
+  });
+
+  useEffect(() => {
+    onChangeRef.current?.({
       startDate: range.from ? format(range.from, "yyyy-MM-dd") : undefined,
       endDate: range.to ? format(range.to, "yyyy-MM-dd") : undefined,
     });
-  }, [onChange, range]);
+  }, [range]);
 
   const monthDays = useMemo(
     () =>

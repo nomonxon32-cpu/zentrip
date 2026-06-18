@@ -11,8 +11,9 @@ export const dynamic = "force-dynamic";
 export default async function HostLandingPage() {
   const [user, locale] = await Promise.all([getCurrentUser(), getCurrentLocale()]);
   const content = getHostContent(locale);
-  const primaryHref =
-    user?.role === Role.OWNER ? "/dashboard/owner/listings/new" : "/register?role=OWNER";
+  const isOwner = user?.role === Role.OWNER;
+  const primaryHref = isOwner ? "/dashboard/owner/listings/new" : "/register?role=OWNER";
+  const primaryCtaLabel = isOwner ? content.ctaOwnerPrimary : content.ctaGuestPrimary;
 
   return (
     <div className="space-y-20 pb-24">
@@ -27,16 +28,16 @@ export default async function HostLandingPage() {
               {content.title}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-100 sm:text-lg">{content.subtitle}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 href={primaryHref}
-                className="inline-flex items-center justify-center rounded-2xl bg-white px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-slate-950/20 transition hover:bg-slate-100"
+                className="inline-flex w-full items-center justify-center rounded-2xl bg-white px-6 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-slate-950/20 transition hover:bg-slate-100 sm:w-auto"
               >
-                {content.primaryCta}
+                {primaryCtaLabel}
               </Link>
               <Link
                 href="#how-it-works"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/30 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10"
+                className="inline-flex w-full items-center justify-center rounded-2xl border border-white/30 px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10 sm:w-auto"
               >
                 {content.secondaryCta}
               </Link>
@@ -135,9 +136,9 @@ export default async function HostLandingPage() {
           <p className="max-w-xl text-slate-200">{content.finalSubtitle}</p>
           <Link
             href={primaryHref}
-            className="inline-flex items-center justify-center rounded-2xl bg-white px-7 py-3.5 text-sm font-bold text-slate-950 shadow-lg transition hover:bg-slate-100"
+            className="inline-flex w-full items-center justify-center rounded-2xl bg-white px-7 py-3.5 text-sm font-bold text-slate-950 shadow-lg transition hover:bg-slate-100 sm:w-auto"
           >
-            {content.finalCta}
+            {primaryCtaLabel}
           </Link>
         </div>
       </section>

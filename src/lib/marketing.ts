@@ -50,6 +50,8 @@ export type HostContent = {
   subtitle: string;
   primaryCta: string;
   secondaryCta: string;
+  ctaGuestPrimary: string;
+  ctaOwnerPrimary: string;
   stats: StatItem[];
   benefitsTitle: string;
   benefits: FeatureItem[];
@@ -103,8 +105,10 @@ const host: Record<Locale, HostContent> = {
     title: "Turn your fleet into a steady stream of verified bookings",
     subtitle:
       "List your cars on Zentrip and reach renters across Uzbekistan. You keep full control of pricing and availability — we bring the demand, verified customers, and payment protection.",
-    primaryCta: "List your fleet",
-    secondaryCta: "Talk to our partnerships team",
+    primaryCta: "List your car",
+    secondaryCta: "See how it works",
+    ctaGuestPrimary: "Create owner account",
+    ctaOwnerPrimary: "Add your first car",
     stats: [
       { value: `${feePct}%`, label: "Flat platform fee — no signup or monthly cost" },
       { value: "24h", label: "Typical listing review turnaround" },
@@ -190,8 +194,10 @@ const host: Record<Locale, HostContent> = {
     title: "Avtoparkingizni tasdiqlangan bronlarning barqaror oqimiga aylantiring",
     subtitle:
       "Avtomobillaringizni Zentrip'ga joylashtiring va butun O'zbekiston bo'ylab ijarachilarga yeting. Narx va mavjudlik to'liq sizning nazoratingizda — biz talab, tasdiqlangan mijozlar va to'lov himoyasini olib kelamiz.",
-    primaryCta: "Avtoparkni joylashtirish",
-    secondaryCta: "Hamkorlik jamoasi bilan bog'lanish",
+    primaryCta: "Avtomobilingizni joylashtiring",
+    secondaryCta: "Qanday ishlashini ko'rish",
+    ctaGuestPrimary: "Egasi akkauntini yaratish",
+    ctaOwnerPrimary: "Birinchi avtomobilni qo'shish",
     stats: [
       { value: `${feePct}%`, label: "Belgilangan platforma to'lovi — ro'yxat yoki oylik to'lovsiz" },
       { value: "24 soat", label: "E'lonni ko'rib chiqishning odatiy muddati" },
@@ -277,8 +283,10 @@ const host: Record<Locale, HostContent> = {
     title: "Превратите свой автопарк в стабильный поток проверенных бронирований",
     subtitle:
       "Разместите свои авто на Zentrip и охватите арендаторов по всему Узбекистану. Цены и доступность полностью под вашим контролем — мы приводим спрос, проверенных клиентов и защиту платежей.",
-    primaryCta: "Разместить автопарк",
-    secondaryCta: "Связаться с командой партнёрств",
+    primaryCta: "Разместить автомобиль",
+    secondaryCta: "Как это работает",
+    ctaGuestPrimary: "Создать аккаунт владельца",
+    ctaOwnerPrimary: "Добавить первый автомобиль",
     stats: [
       { value: `${feePct}%`, label: "Фиксированная комиссия — без платы за регистрацию и абонентской платы" },
       { value: "24 ч", label: "Обычный срок проверки объявления" },
