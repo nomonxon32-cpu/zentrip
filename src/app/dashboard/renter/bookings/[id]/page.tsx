@@ -2,6 +2,7 @@ import { BookingStatus, Role } from "@prisma/client";
 import { notFound } from "next/navigation";
 
 import { BackButton } from "@/components/back-button";
+import { CashPaymentBadge } from "@/components/cash-payment-badge";
 import { MessageThread } from "@/components/message-thread";
 import { PriceBreakdown } from "@/components/price-breakdown";
 import { ReviewForm } from "@/components/forms/review-form";
@@ -75,7 +76,11 @@ export default async function RenterBookingDetailPage({
             <StatusBadge value={booking.status} />
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
-            <StatusBadge value={booking.paymentStatus} />
+            <CashPaymentBadge
+              settled={
+                booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED
+              }
+            />
             <RenterBookingActions bookingId={booking.id} status={booking.status} />
           </div>
         </div>
@@ -102,7 +107,9 @@ export default async function RenterBookingDetailPage({
           <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">Owner</h2>
           <p className="mt-4 font-semibold text-slate-950 dark:text-slate-50">{booking.owner.name}</p>
           <p className="text-sm text-slate-500 dark:text-slate-400">{booking.owner.phone}</p>
-          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Current payment records: {booking.payments.length}</p>
+          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+            {labels.paymentMethodLabel}: {labels.cashPayment} · {labels.payAtPickup}
+          </p>
         </div>
 
         {booking.status === BookingStatus.COMPLETED && !booking.reviews.length ? (

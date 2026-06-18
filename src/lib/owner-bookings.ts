@@ -1,12 +1,4 @@
-import {
-  BookingPaymentStatus,
-  BookingStatus,
-  DocumentType,
-  PaymentMethod,
-  PaymentStatus,
-  PaymentType,
-  Prisma,
-} from "@prisma/client";
+import { BookingStatus, DocumentType, Prisma } from "@prisma/client";
 
 import { hasAvailabilityConflict } from "@/lib/availability";
 import { db } from "@/lib/db";
@@ -170,56 +162,15 @@ export async function rejectOwnerBooking(params: {
   }
 
   const rejectionReason = params.reason?.trim() || "Rejected by owner";
-  const rentalPayment = booking.payments.find((payment) => payment.type === PaymentType.RENTAL_PAYMENT);
-  const refundAmount = rentalPayment?.amount ?? booking.rentalAmount + booking.serviceFee;
-  const hasRefundRecord = booking.payments.some((payment) => payment.type === PaymentType.REFUND);
 
-  await db.$transaction(async (tx) => {
-    await tx.booking.update({
-      where: { id: booking.id },
-      data: {
-        status: BookingStatus.REJECTED,
-        paymentStatus: BookingPaymentStatus.REFUNDED,
-        cancellationReason: rejectionReason,
-      },
-    });
-
-    await tx.payment.updateMany({
-      where: {
-        bookingId: booking.id,
-        type: PaymentType.RENTAL_PAYMENT,
-      },
-      data: {
-        status: PaymentStatus.REFUNDED,
-      },
-    });
-
-    await tx.payment.updateMany({
-      where: {
-        bookingId: booking.id,
-        type: PaymentType.DEPOSIT_HOLD,
-        status: {
-          notIn: [PaymentStatus.RELEASED, PaymentStatus.REFUNDED],
-        },
-      },
-      data: {
-        status: PaymentStatus.RELEASED,
-      },
-    });
-
-    if (!hasRefundRecord) {
-      await tx.payment.create({
-        data: {
-          bookingId: booking.id,
-          userId: booking.renterId,
-          amount: refundAmount,
-          type: PaymentType.REFUND,
-          method: rentalPayment?.method ?? PaymentMethod.UZCARD,
-          status: PaymentStatus.REFUNDED,
-          providerReference: `OWNER-REFUND-${Date.now()}`,
-        },
-      });
-    }
+  // Cash-only flow: no online money was taken, so rejecting simply marks the
+  // booking as rejected. paymentStatus stays UNPAID.
+  await db.booking.update({
+    where: { id: booking.id },
+    data: {
+      status: BookingStatus.REJECTED,
+      cancellationReason: rejectionReason,
+    },
   });
 
   await createNotification({
@@ -264,7 +215,6 @@ async function getDecisionBooking(ownerId: string, bookingId: string) {
           name: true,
         },
       },
-      payments: true,
     },
   });
 

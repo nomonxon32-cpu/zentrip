@@ -1,6 +1,7 @@
 import { BookingPaymentStatus, BookingStatus, Role } from "@prisma/client";
 
 import { AdminShell } from "@/components/admin/admin-shell";
+import { CashPaymentBadge } from "@/components/cash-payment-badge";
 import { DataTable } from "@/components/data-table";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
@@ -81,10 +82,15 @@ export default async function AdminBookingsPage({
             <p className="text-xs text-slate-500 dark:text-slate-400">{booking.owner.email}</p>
           </div>,
           <StatusBadge key={`${booking.id}-status`} value={booking.status} />,
-          <StatusBadge key={`${booking.id}-payment-status`} value={booking.paymentStatus} />,
+          <CashPaymentBadge
+            key={`${booking.id}-payment-status`}
+            settled={
+              booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED
+            }
+          />,
           <div key={`${booking.id}-amount`}>
             <p className="font-semibold text-slate-950 dark:text-slate-50">{formatCurrency(booking.totalAmount)}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">{booking.payments.length} rows</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{labels.cashPayment}</p>
           </div>,
         ])}
       />

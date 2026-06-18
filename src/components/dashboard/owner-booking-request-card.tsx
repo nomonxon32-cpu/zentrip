@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { BookingStatus } from "@prisma/client";
 
+import { CashPaymentBadge } from "@/components/cash-payment-badge";
 import { OwnerBookingActions } from "@/components/dashboard/owner-booking-actions";
 import { useLocale } from "@/components/providers";
 import { StatusBadge } from "@/components/status-badge";
@@ -20,6 +21,8 @@ export function OwnerBookingRequestCard({
   const { locale, labels } = useLocale();
   const cover = booking.vehicle.photos[0]?.url;
   const dateRange = `${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`;
+  const paymentSettled =
+    booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED;
 
   if (compact) {
     return (
@@ -51,7 +54,7 @@ export function OwnerBookingRequestCard({
 
           <div className="flex flex-wrap gap-2">
             <StatusBadge value={booking.status} />
-            <StatusBadge value={booking.paymentStatus} />
+            <CashPaymentBadge settled={paymentSettled} />
           </div>
 
           <Link
@@ -97,7 +100,7 @@ export function OwnerBookingRequestCard({
             </div>
             <div className="flex flex-wrap gap-2">
               <StatusBadge value={booking.status} />
-              <StatusBadge value={booking.paymentStatus} />
+              <CashPaymentBadge settled={paymentSettled} />
             </div>
           </div>
 

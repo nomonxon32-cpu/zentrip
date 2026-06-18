@@ -1,7 +1,8 @@
-import { Role } from "@prisma/client";
+import { BookingStatus, Role } from "@prisma/client";
 import { notFound } from "next/navigation";
 
 import { BackButton } from "@/components/back-button";
+import { CashPaymentBadge } from "@/components/cash-payment-badge";
 import { MessageThread } from "@/components/message-thread";
 import { PriceBreakdown } from "@/components/price-breakdown";
 import { DisputeForm } from "@/components/forms/dispute-form";
@@ -31,6 +32,8 @@ export default async function OwnerBookingDetailPage({
 
   const driverLicense = booking.renter.kycDocuments[0] ?? null;
   const vehicleCover = booking.vehicle.photos[0]?.url;
+  const paymentSettled =
+    booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED;
 
   return (
     <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8">
@@ -51,7 +54,7 @@ export default async function OwnerBookingDetailPage({
             </div>
             <div className="flex flex-wrap gap-2">
               <StatusBadge value={booking.status} />
-              <StatusBadge value={booking.paymentStatus} />
+              <CashPaymentBadge settled={paymentSettled} />
             </div>
           </div>
           <div className="mt-6 grid gap-3 text-sm text-slate-600 dark:text-slate-300 md:grid-cols-2 xl:grid-cols-4">
@@ -127,7 +130,7 @@ export default async function OwnerBookingDetailPage({
               <StatusBadge value={booking.renter.kycStatus} />
             </div>
             <div>
-              <StatusBadge value={booking.paymentStatus} />
+              <CashPaymentBadge settled={paymentSettled} />
             </div>
           </div>
         </div>
@@ -183,18 +186,17 @@ export default async function OwnerBookingDetailPage({
         </div>
 
         <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
-          <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">Payment ledger</h2>
-          <div className="mt-4 space-y-3">
-            {booking.payments.map((payment) => (
-              <div key={payment.id} className="rounded-2xl bg-slate-50 p-4 text-sm dark:bg-slate-800">
-                <p className="font-semibold text-slate-950 dark:text-slate-50">{payment.type.replaceAll("_", " ")}</p>
-                <p className="mt-1 text-slate-500 dark:text-slate-400">{payment.amount.toLocaleString("en-US")} UZS</p>
-                <div className="mt-2">
-                  <StatusBadge value={payment.status} />
-                </div>
-              </div>
-            ))}
+          <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.paymentMethodLabel}</h2>
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-4 text-sm dark:bg-slate-800">
+            <div>
+              <p className="font-semibold text-slate-950 dark:text-slate-50">{labels.cashPayment}</p>
+              <p className="mt-1 text-slate-500 dark:text-slate-400">{labels.payAtPickupDetail}</p>
+            </div>
+            <CashPaymentBadge settled={paymentSettled} />
           </div>
+          <p className="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
+            {labels.totalPayable}: {formatCurrency(booking.totalAmount)}
+          </p>
         </div>
 
         <DisputeForm bookingId={booking.id} />

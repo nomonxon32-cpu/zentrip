@@ -1,10 +1,4 @@
-import {
-  BookingPaymentStatus,
-  BookingStatus,
-  PaymentStatus,
-  PaymentType,
-  Role,
-} from "@prisma/client";
+import { BookingStatus, Role } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 import { requireApiUser } from "@/lib/auth";
@@ -32,7 +26,6 @@ export async function PATCH(
       where: { id },
       include: {
         vehicle: true,
-        payments: true,
         renter: true,
         owner: true,
       },
@@ -65,47 +58,14 @@ export async function PATCH(
         return NextResponse.json({ error: "This booking can no longer be cancelled." }, { status: 400 });
       }
 
-      await db.$transaction(async (tx) => {
-        await tx.booking.update({
-          where: { id },
-          data: {
-            status: BookingStatus.CANCELLED,
-            paymentStatus: BookingPaymentStatus.REFUNDED,
-            cancellationReason: body.reason ?? "Cancelled by renter",
-          },
-        });
-
-        await tx.payment.updateMany({
-          where: {
-            bookingId: id,
-            type: PaymentType.RENTAL_PAYMENT,
-          },
-          data: {
-            status: PaymentStatus.REFUNDED,
-          },
-        });
-
-        await tx.payment.updateMany({
-          where: {
-            bookingId: id,
-            type: PaymentType.DEPOSIT_HOLD,
-          },
-          data: {
-            status: PaymentStatus.RELEASED,
-          },
-        });
-
-        await tx.payment.create({
-          data: {
-            bookingId: id,
-            userId: booking.renterId,
-            amount: booking.rentalAmount + booking.serviceFee,
-            type: PaymentType.REFUND,
-            method: booking.payments[0]?.method ?? "UZCARD",
-            status: PaymentStatus.REFUNDED,
-            providerReference: `REFUND-${Date.now()}`,
-          },
-        });
+      // Cash-only flow: no online money moved, so there is nothing to refund.
+      // Simply mark the booking cancelled; paymentStatus stays UNPAID.
+      await db.booking.update({
+        where: { id },
+        data: {
+          status: BookingStatus.CANCELLED,
+          cancellationReason: body.reason ?? "Cancelled by renter",
+        },
       });
 
       await createNotification({
@@ -157,40 +117,21 @@ export async function PATCH(
         return NextResponse.json({ error: "Only active bookings can be completed." }, { status: 400 });
       }
 
-      const rentalPayment = booking.payments.find((payment) => payment.type === PaymentType.RENTAL_PAYMENT);
-
-      await db.$transaction(async (tx) => {
-        await tx.booking.update({
-          where: { id },
-          data: {
-            status: BookingStatus.COMPLETED,
-            returnNotes: body.returnNotes ?? booking.returnNotes,
-          },
-        });
-
-        await tx.payment.updateMany({
-          where: { bookingId: id, type: PaymentType.DEPOSIT_HOLD },
-          data: { status: PaymentStatus.RELEASED },
-        });
-
-        await tx.payment.create({
-          data: {
-            bookingId: id,
-            userId: booking.ownerId,
-            amount: booking.rentalAmount - booking.serviceFee,
-            type: PaymentType.PAYOUT,
-            method: rentalPayment?.method ?? "UZCARD",
-            status: PaymentStatus.SUCCESS,
-            providerReference: `PAYOUT-${Date.now()}`,
-          },
-        });
+      // Cash-only flow: payout and deposit are handled in cash offline, so we
+      // only advance the booking lifecycle here.
+      await db.booking.update({
+        where: { id },
+        data: {
+          status: BookingStatus.COMPLETED,
+          returnNotes: body.returnNotes ?? booking.returnNotes,
+        },
       });
 
       await createNotification({
         userId: booking.renterId,
         type: "BOOKING_COMPLETED",
         title: "Trip completed",
-        message: `Your trip for ${booking.vehicle.make} ${booking.vehicle.model} was completed and the deposit hold was released.`,
+        message: `Your trip for ${booking.vehicle.make} ${booking.vehicle.model} is complete. Thanks for using Zentrip.`,
       });
     }
 

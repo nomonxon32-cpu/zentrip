@@ -93,7 +93,8 @@ export const bookingSchema = z
     startTime: optionalTimeSchema.optional(),
     endTime: optionalTimeSchema.optional(),
     deliveryFee: z.number().int().min(0).optional().nullable(),
-    paymentMethod: z.nativeEnum(PaymentMethod),
+    // Cash-only flow. Kept for backward compatibility but always treated as CASH.
+    paymentMethod: z.nativeEnum(PaymentMethod).optional().default(PaymentMethod.CASH),
     pickupNotes: z.string().max(300).optional().nullable(),
   })
   .superRefine((value, ctx) => {

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Role } from "@prisma/client";
+import { BookingStatus, Role } from "@prisma/client";
 import { notFound } from "next/navigation";
 
 import { BackButton } from "@/components/back-button";
+import { CashPaymentBadge } from "@/components/cash-payment-badge";
 import { PriceBreakdown } from "@/components/price-breakdown";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
@@ -29,29 +30,29 @@ export default async function BookingConfirmedPage({
     notFound();
   }
 
+  const requiresApproval = booking.status === BookingStatus.PENDING_OWNER_APPROVAL;
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-6">
         <BackButton fallbackHref="/dashboard/renter" label={labels.backToDashboard} />
       </div>
-      <div className="surface-card rounded-[2.5rem] p-8 dark:bg-slate-900">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-600">{labels.bookingRequested}</p>
-        <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
-          {locale === "uz"
-            ? `${booking.vehicle.make} ${booking.vehicle.model} uchun so'rovingiz yuborildi.`
-            : locale === "ru"
-              ? `Ваш запрос на ${booking.vehicle.make} ${booking.vehicle.model} отправлен.`
-              : `Your request for ${booking.vehicle.make} ${booking.vehicle.model} is in.`}
+      <div className="surface-card rounded-[2.5rem] p-6 sm:p-8 dark:bg-slate-900">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-600">
+          {requiresApproval ? labels.bookingRequestSent : labels.carBooked}
+        </p>
+        <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl dark:text-slate-50">
+          {booking.vehicle.make} {booking.vehicle.model}
         </h1>
         <p className="mt-4 text-base leading-8 text-slate-600 dark:text-slate-400">
-          {locale === "uz"
-            ? "To'lov muvaffaqiyatli simulyatsiya qilindi va egasiga xabar yuborildi. Qaytariladigan depozit safar yakunigacha ushlab turiladi."
-            : locale === "ru"
-              ? "Оплата успешно смоделирована, владелец уведомлен. Возвратный депозит удерживается до завершения поездки."
-              : "Payment was simulated successfully and the owner has been notified. The refundable deposit is marked as held until trip completion."}
+          {requiresApproval ? labels.bookingRequestSentBody : labels.carBookedBody}
         </p>
-        <div className="mt-6">
+        <p className="mt-3 text-lg font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
+          {labels.safeTrips}
+        </p>
+        <div className="mt-6 flex flex-wrap gap-2">
           <StatusBadge value={booking.status} />
+          <CashPaymentBadge />
         </div>
         <div className="mt-8">
           <PriceBreakdown

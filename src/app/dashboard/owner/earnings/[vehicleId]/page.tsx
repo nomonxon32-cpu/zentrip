@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { Role } from "@prisma/client";
+import { BookingStatus, Role } from "@prisma/client";
 import { notFound } from "next/navigation";
 
 import { BackButton } from "@/components/back-button";
+import { CashPaymentBadge } from "@/components/cash-payment-badge";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { EmptyState } from "@/components/empty-state";
 import { StatCard } from "@/components/stat-card";
@@ -88,7 +88,12 @@ export default async function OwnerVehicleEarningsPage({
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <StatusBadge value={booking.status} />
-                  <StatusBadge value={booking.paymentStatus} />
+                  <CashPaymentBadge
+                    settled={
+                      booking.status === BookingStatus.ACTIVE ||
+                      booking.status === BookingStatus.COMPLETED
+                    }
+                  />
                 </div>
               </div>
 
@@ -100,7 +105,7 @@ export default async function OwnerVehicleEarningsPage({
                 <Info label={labels.platformServiceFee} value={formatCurrency(booking.serviceFee)} />
                 <Info label={locale === "uz" ? "Ega daromadi" : locale === "ru" ? "Доход владельца" : "Owner net"} value={formatCurrency(booking.ownerNet)} />
                 <Info label={locale === "uz" ? "Depozit holati" : locale === "ru" ? "Статус депозита" : "Deposit status"} value={getStatusLabel(locale, booking.depositStatus)} />
-                <Info label={labels.paymentStatus} value={getStatusLabel(locale, booking.paymentStatus)} />
+                <Info label={labels.paymentMethodLabel} value={labels.cashPayment} />
               </div>
             </div>
           ))}

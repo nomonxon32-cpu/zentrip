@@ -108,17 +108,17 @@ export default async function CheckoutPage({
       </div>
       <div className="mb-8">
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-600">
-          {locale === "uz" ? "Checkout" : locale === "ru" ? "Оформление" : "Checkout"}
+          {labels.confirmBooking}
         </p>
         <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">
           {vehicle.make} {vehicle.model}
         </h1>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
           {locale === "uz"
-            ? "Ushbu MVPda har bir bron so'rovi egasi tomonidan tasdiqlanadi."
+            ? "To'lovni avtomobilni olish vaqtida naqd qilasiz. Har bir bron safardan oldin egasi tomonidan tasdiqlanadi."
             : locale === "ru"
-              ? "В этом MVP каждое бронирование требует одобрения владельца."
-              : "Owner approval is required for every booking request in this MVP."}
+              ? "Оплата наличными при получении автомобиля. Каждое бронирование подтверждается владельцем до поездки."
+              : "You pay in cash at pickup. Every booking is confirmed by the owner before your trip."}
         </p>
       </div>
       <CheckoutForm

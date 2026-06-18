@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookingType, PaymentMethod } from "@prisma/client";
 import { addMonths, format } from "date-fns";
+import { Banknote } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
@@ -12,8 +13,7 @@ import { z } from "zod";
 import { DateRangePicker } from "@/components/date-range-picker";
 import { PriceBreakdown } from "@/components/price-breakdown";
 import { useLocale } from "@/components/providers";
-import { monthlyDurationOptions, paymentMethodOptions } from "@/lib/constants";
-import { getPaymentMethodLabel } from "@/lib/i18n-dictionary";
+import { monthlyDurationOptions } from "@/lib/constants";
 import { calculateBookingPrice, calculateMonthlyBookingPrice, getVehicleMonthlyPrice } from "@/lib/pricing";
 import { bookingSchema } from "@/lib/validators";
 
@@ -76,7 +76,7 @@ export function CheckoutForm({
       startTime: initialStartTime ?? "10:00",
       endTime: initialEndTime ?? "18:00",
       deliveryFee: deliveryAvailable ? deliveryFee : 0,
-      paymentMethod: PaymentMethod.UZCARD,
+      paymentMethod: PaymentMethod.CASH,
       pickupNotes: "",
     },
   });
@@ -297,15 +297,18 @@ export function CheckoutForm({
 
         <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
           <h3 className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">
-            {locale === "uz" ? "To'lov usuli" : locale === "ru" ? "Способ оплаты" : "Payment method"}
+            {labels.paymentMethodLabel}
           </h3>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {paymentMethodOptions.map((method) => (
-              <label key={method} className="rounded-2xl border border-slate-200 px-4 py-3 font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">
-                <input {...register("paymentMethod")} type="radio" value={method} className="mr-3" />
-                {getPaymentMethodLabel(locale, method)}
-              </label>
-            ))}
+          <div className="mt-4 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-950/40">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+              <Banknote className="h-5 w-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="font-semibold text-emerald-900 dark:text-emerald-200">{labels.cashPayment}</p>
+              <p className="mt-1 text-sm leading-6 text-emerald-800/80 dark:text-emerald-300/80">
+                {labels.payAtPickupDetail}
+              </p>
+            </div>
           </div>
           <div className="mt-5">
             <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -368,13 +371,7 @@ export function CheckoutForm({
           disabled={isSubmitting || !summary}
           className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition"
         >
-          {isSubmitting
-            ? locale === "uz"
-              ? "Mock to'lov bajarilmoqda..."
-              : locale === "ru"
-                ? "Обрабатывается mock оплата..."
-                : "Processing mock payment..."
-            : labels.payAndRequest}
+          {isSubmitting ? labels.confirmingBooking : labels.confirmBooking}
         </button>
       </div>
     </form>

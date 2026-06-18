@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BookingStatus, Role } from "@prisma/client";
 
+import { CashPaymentBadge } from "@/components/cash-payment-badge";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { EmptyState } from "@/components/empty-state";
 import { StatusBadge } from "@/components/status-badge";
@@ -98,7 +99,12 @@ export default async function RenterBookingsPage() {
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <StatusBadge value={booking.status} />
-                          <StatusBadge value={booking.paymentStatus} />
+                          <CashPaymentBadge
+                            settled={
+                              booking.status === BookingStatus.ACTIVE ||
+                              booking.status === BookingStatus.COMPLETED
+                            }
+                          />
                         </div>
                       </div>
 
