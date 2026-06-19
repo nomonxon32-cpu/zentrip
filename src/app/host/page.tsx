@@ -138,7 +138,7 @@ export default async function HostLandingPage() {
             href={primaryHref}
             className="inline-flex w-full items-center justify-center rounded-2xl bg-white px-7 py-3.5 text-sm font-bold text-slate-950 shadow-lg transition hover:bg-slate-100 sm:w-auto"
           >
-            {primaryCtaLabel}
+            {content.finalCta}
           </Link>
         </div>
       </section>

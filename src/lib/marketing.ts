@@ -187,7 +187,7 @@ const host: Record<Locale, HostContent> = {
     ],
     finalTitle: "Ready to fill your calendar?",
     finalSubtitle: "Join the rental offices and owners already earning on Zentrip.",
-    finalCta: "List your fleet",
+    finalCta: "Start hosting",
   },
   uz: {
     eyebrow: "Ijara ofislari va avtopark egalari uchun",
@@ -276,7 +276,7 @@ const host: Record<Locale, HostContent> = {
     ],
     finalTitle: "Kalendaringizni to'ldirishga tayyormisiz?",
     finalSubtitle: "Zentrip'da allaqachon daromad olayotgan ijara ofislari va egalariga qo'shiling.",
-    finalCta: "Avtoparkni joylashtirish",
+    finalCta: "Boshlash",
   },
   ru: {
     eyebrow: "Для прокатов и владельцев автопарков",
@@ -365,7 +365,7 @@ const host: Record<Locale, HostContent> = {
     ],
     finalTitle: "Готовы заполнить календарь?",
     finalSubtitle: "Присоединяйтесь к прокатам и владельцам, которые уже зарабатывают на Zentrip.",
-    finalCta: "Разместить автопарк",
+    finalCta: "Начать размещение",
   },
 };
 
