@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { APP_NAME } from "@/lib/constants";
+import { BrandLogo } from "@/components/brand-logo";
 import { getCurrentLocale, getDictionary } from "@/lib/i18n";
 
 export async function Footer() {
@@ -11,7 +11,9 @@ export async function Footer() {
     <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
       <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 text-sm text-slate-600 dark:text-slate-400 sm:px-6 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-8">
         <div className="space-y-3">
-          <p className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">{APP_NAME}</p>
+          <Link href="/" aria-label="Zentrip home" className="inline-flex">
+            <BrandLogo iconClassName="h-7 w-7" wordmarkClassName="text-lg" />
+          </Link>
           <p className="max-w-md leading-6">
             {locale === "uz"
               ? "O'zbekiston bo'ylab shaxsiy avtomobil ijara bozori - shaxsni tekshirish, egasi tasdig'i va himoyalangan bozor tajribasi bilan."

@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { KycStatus, Role } from "@prisma/client";
-import { CarFront, Menu, ShieldCheck } from "lucide-react";
+import { Menu, ShieldCheck } from "lucide-react";
 import { usePathname } from "next/navigation";
 
+import { BrandLogo } from "@/components/brand-logo";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
@@ -145,11 +146,8 @@ function HomepageNavbar({ user, dropdownStats, labels, hostHref }: NavbarProps) 
       </div>
 
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-950/15">
-            <CarFront className="h-5 w-5" />
-          </span>
-          <span className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.appName}</span>
+        <Link href="/" aria-label={`${labels.appName} home`} className="flex items-center">
+          <BrandLogo iconClassName="h-8 w-8 sm:h-9 sm:w-9" wordmarkClassName="text-lg sm:text-xl" />
         </Link>
 
         <NavActions
@@ -177,16 +175,8 @@ function DefaultNavbar({ user, dropdownStats, labels, hostHref }: NavbarProps) {
         </div>
       </div>
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-lg shadow-slate-950/15">
-            <CarFront className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-sky-600">
-              {labels.peerToPeerRentals}
-            </p>
-            <p className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.appName}</p>
-          </div>
+        <Link href="/" aria-label={`${labels.appName} home`} className="flex items-center">
+          <BrandLogo iconClassName="h-8 w-8 sm:h-9 sm:w-9" wordmarkClassName="text-lg sm:text-xl" />
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-semibold text-slate-700 dark:text-slate-200 lg:flex">

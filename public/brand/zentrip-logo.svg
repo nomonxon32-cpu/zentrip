@@ -1,0 +1,12 @@
+<svg width="300" height="64" viewBox="0 0 300 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="8" y1="12" x2="56" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/>
+      <stop offset="0.55" stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  <path d="M12 12 H52 V22 L30 42 H52 V52 H12 V42 L34 22 H12 Z" fill="url(#g)" stroke="url(#g)" stroke-width="3" stroke-linejoin="round"/>
+  <text x="74" y="41" font-family="Aptos, 'Segoe UI', system-ui, sans-serif" font-size="33" font-weight="800" letter-spacing="-1.2" fill="#0F172A">Zentrip</text>
+  <text x="75" y="55" font-family="Aptos, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="600" letter-spacing="3" fill="#64748B">RENT. DRIVE. EXPLORE.</text>
+</svg>
