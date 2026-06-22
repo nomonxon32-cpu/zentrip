@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import { LoaderCircle, UploadCloud, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -99,7 +98,7 @@ export function UploadBox({
       {value.length ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {value.map((url, index) => {
-            const isPdf = url.endsWith(".pdf");
+            const isPdf = url.split("?")[0].toLowerCase().endsWith(".pdf");
             return (
               <div key={`${url}-${index}`} className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
                 <button
@@ -115,7 +114,7 @@ export function UploadBox({
                   </div>
                 ) : (
                   <div className="relative h-36">
-                    <Image src={url} alt="Upload preview" fill className="object-cover" />
+                    <img src={url} alt="Upload preview" className="h-full w-full object-cover" />
                   </div>
                 )}
               </div>

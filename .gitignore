@@ -46,3 +46,8 @@ prisma/*.db-journal
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local-dev upload fallback (production uses Vercel Blob)
+/public/uploads/vehicles/
+/public/uploads/kyc/
+/public/uploads/general/

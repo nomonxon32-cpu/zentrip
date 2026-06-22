@@ -3,7 +3,13 @@ import { z } from "zod";
 
 import { MAX_RENTAL_DAYS } from "@/lib/constants";
 
-const imageUrlSchema = z.string().min(1).startsWith("/");
+// Accepts a Vercel Blob URL (https://...) or a local-dev path (/uploads/...).
+const imageUrlSchema = z
+  .string()
+  .min(1)
+  .refine((value) => value.startsWith("/") || /^https:\/\//i.test(value), {
+    message: "Invalid file URL.",
+  });
 const optionalTimeSchema = z.union([z.literal(""), z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Enter a valid time in HH:mm format.")]);
 
 export const registerSchema = z.object({

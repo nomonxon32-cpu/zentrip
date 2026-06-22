@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Role } from "@prisma/client";
 
 import { AdminShell } from "@/components/admin/admin-shell";
@@ -69,14 +68,21 @@ export default async function AdminKycPage() {
 }
 
 function PreviewCard({ url, pdfLabel }: { url: string; pdfLabel: string }) {
-  const isPdf = url.endsWith(".pdf");
+  const isPdf = url.split("?")[0].toLowerCase().endsWith(".pdf");
   return (
     <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900">
       {isPdf ? (
-        <div className="flex h-52 items-center justify-center font-semibold text-slate-500 dark:text-slate-400">{pdfLabel}</div>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex h-52 items-center justify-center font-semibold text-sky-600 underline underline-offset-4 dark:text-sky-400"
+        >
+          {pdfLabel}
+        </a>
       ) : (
         <div className="relative h-52">
-          <Image src={url} alt="KYC document" fill className="object-cover" />
+          <img src={url} alt="KYC document" className="h-full w-full object-cover" />
         </div>
       )}
     </div>
