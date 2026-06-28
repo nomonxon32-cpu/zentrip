@@ -29,21 +29,25 @@ export async function saveUploadedFile(file: File, folder: UploadFolder = "gener
     throw new ApiError(400, "File exceeds the 4 MB upload limit.");
   }
 
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
   const prefix = uploadFolderMap[folder];
+  const hasBlobStoreId = Boolean(process.env.BLOB_STORE_ID);
+  const hasOidcToken = Boolean(process.env.VERCEL_OIDC_TOKEN);
+  const hasBlobToken = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
   console.info("[upload] blob upload requested", {
     fileName: file.name,
     fileType: file.type,
     fileSize: file.size,
     prefix,
-    hasBlobToken: Boolean(token),
+    hasBlobStoreId,
+    hasOidcToken,
+    hasBlobToken,
   });
 
-  if (!token) {
+  if (!hasOidcToken && !hasBlobToken) {
     throw new ApiError(
       500,
-      "File storage is not configured. Missing BLOB_READ_WRITE_TOKEN.",
+      "File storage is not configured. Connect the Blob store in Vercel or provide a valid BLOB_READ_WRITE_TOKEN for local uploads.",
     );
   }
 
@@ -52,17 +56,18 @@ export async function saveUploadedFile(file: File, folder: UploadFolder = "gener
   const pathname = `${prefix}/${filename}`;
 
   try {
-    const body = Buffer.from(await file.arrayBuffer());
-    const blob = await put(pathname, body, {
+    const blob = await put(pathname, file, {
       access: "public",
-      contentType: file.type,
-      token,
+      addRandomSuffix: true,
     });
 
     console.info("[upload] blob upload complete", {
       fileName: file.name,
       prefix,
       url: blob.url,
+      hasBlobStoreId,
+      hasOidcToken,
+      hasBlobToken,
     });
 
     return blob.url;

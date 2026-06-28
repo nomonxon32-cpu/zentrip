@@ -44,6 +44,8 @@ export async function POST(request: Request) {
       fileType: isUploadFile(file) ? file.type : null,
       fileSize: isUploadFile(file) ? file.size : null,
       prefix,
+      hasBlobStoreId: Boolean(process.env.BLOB_STORE_ID),
+      hasOidcToken: Boolean(process.env.VERCEL_OIDC_TOKEN),
       hasBlobToken: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
     });
 
