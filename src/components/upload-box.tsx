@@ -5,6 +5,7 @@ import { LoaderCircle, UploadCloud, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { useLocale } from "@/components/providers";
+import { acceptedUploadTypes, MAX_UPLOAD_SIZE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 type UploadBoxProps = {
@@ -36,6 +37,14 @@ export function UploadBox({
       const uploadedUrls: string[] = [];
 
       for (const file of Array.from(files)) {
+        if (!acceptedUploadTypes.includes(file.type)) {
+          throw new Error("Unsupported file type. Upload JPG, JPEG, PNG, WEBP, or PDF.");
+        }
+
+        if (file.size > MAX_UPLOAD_SIZE) {
+          throw new Error("File exceeds the 4 MB upload limit.");
+        }
+
         const formData = new FormData();
         formData.append("file", file);
         formData.append("folder", folder);
@@ -45,8 +54,8 @@ export function UploadBox({
           body: formData,
         });
 
-        const payload = (await response.json()) as { url?: string; error?: string };
-        if (!response.ok || !payload.url) {
+        const payload = (await response.json()) as { success?: boolean; url?: string; error?: string };
+        if (!response.ok || !payload.success || !payload.url) {
           throw new Error(payload.error ?? labels.actionFailed);
         }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Monitor, Moon, Sun } from "lucide-react";
 
 import { useLocale, useThemeMode } from "@/components/providers";
@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 export function ThemeToggle() {
   const { labels } = useLocale();
   const { theme, setTheme } = useThemeMode();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   if (!mounted) {
     return (

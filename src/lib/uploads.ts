@@ -1,5 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 import { put } from "@vercel/blob";
@@ -7,61 +5,88 @@ import { put } from "@vercel/blob";
 import { acceptedUploadTypes, MAX_UPLOAD_SIZE } from "@/lib/constants";
 import { ApiError } from "@/lib/http";
 
-/**
- * Stores an uploaded file and returns a URL to persist in the database.
- *
- * Production / any environment with a Blob token: uploads to Vercel Blob (the
- * serverless filesystem is read-only, so we must NOT write to public/uploads).
- * Local development without a token: falls back to writing under public/uploads
- * so the dev experience works with no extra setup.
- */
-export async function saveUploadedFile(file: File, folder = "general") {
+const uploadFolderMap = {
+  vehicles: "vehicles",
+  kyc: "kyc",
+  general: "general",
+} as const;
+
+export type UploadFolder = keyof typeof uploadFolderMap;
+
+export function resolveUploadFolder(folder: string | null | undefined): UploadFolder {
+  if (!folder) return "general";
+
+  const normalized = folder.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
+  return normalized in uploadFolderMap ? (normalized as UploadFolder) : "general";
+}
+
+export async function saveUploadedFile(file: File, folder: UploadFolder = "general") {
   if (!acceptedUploadTypes.includes(file.type)) {
-    throw new ApiError(400, "Unsupported file type. Upload JPG, PNG, WEBP, or PDF.");
+    throw new ApiError(400, "Unsupported file type. Upload JPG, JPEG, PNG, WEBP, or PDF.");
   }
 
   if (file.size > MAX_UPLOAD_SIZE) {
-    throw new ApiError(400, "File exceeds the 5MB upload limit.");
+    throw new ApiError(400, "File exceeds the 4 MB upload limit.");
   }
 
-  const safeFolder = folder.replace(/[^a-z0-9_-]/gi, "") || "general";
-  const extension = path.extname(file.name) || mimeTypeToExtension(file.type);
-  const filename = `${Date.now()}-${randomUUID()}${extension}`;
   const token = process.env.BLOB_READ_WRITE_TOKEN;
+  const prefix = uploadFolderMap[folder];
 
-  if (token) {
-    try {
-      const blob = await put(`uploads/${safeFolder}/${filename}`, file, {
-        access: "public",
-        // Random suffix keeps document URLs unguessable (matters for KYC docs).
-        addRandomSuffix: true,
-        contentType: file.type,
-        token,
-      });
-      return blob.url;
-    } catch {
-      throw new ApiError(502, "Could not store the uploaded file. Please try again.");
-    }
-  }
+  console.info("[upload] blob upload requested", {
+    fileName: file.name,
+    fileType: file.type,
+    fileSize: file.size,
+    prefix,
+    hasBlobToken: Boolean(token),
+  });
 
-  if (process.env.NODE_ENV === "production") {
-    // Never write to the read-only serverless filesystem. Surface a clear,
-    // actionable message instead of an EROFS stack trace.
+  if (!token) {
     throw new ApiError(
       500,
-      "File storage is not configured. Add the BLOB_READ_WRITE_TOKEN environment variable.",
+      "File storage is not configured. Missing BLOB_READ_WRITE_TOKEN.",
     );
   }
 
-  // Local-dev only fallback (filesystem is writable here).
-  const absoluteDir = path.join(process.cwd(), "public", "uploads", safeFolder);
-  await mkdir(absoluteDir, { recursive: true });
-  await writeFile(path.join(absoluteDir, filename), Buffer.from(await file.arrayBuffer()));
-  return `/uploads/${safeFolder}/${filename}`;
+  const extension = getFileExtension(file.name, file.type);
+  const filename = `${Date.now()}-${randomUUID()}${extension}`;
+  const pathname = `${prefix}/${filename}`;
+
+  try {
+    const body = Buffer.from(await file.arrayBuffer());
+    const blob = await put(pathname, body, {
+      access: "public",
+      contentType: file.type,
+      token,
+    });
+
+    console.info("[upload] blob upload complete", {
+      fileName: file.name,
+      prefix,
+      url: blob.url,
+    });
+
+    return blob.url;
+  } catch (error) {
+    console.error("[upload] blob upload failed", serializeUploadError(error, {
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      prefix,
+    }));
+
+    throw new ApiError(502, "Could not store the uploaded file. Please try again.");
+  }
 }
 
-function mimeTypeToExtension(type: string) {
-  switch (type) {
+function getFileExtension(fileName: string, mimeType: string) {
+  const rawExtension = fileName.includes(".") ? `.${fileName.split(".").pop() ?? ""}` : "";
+  const safeExtension = rawExtension.toLowerCase();
+
+  if (safeExtension && /^\.([a-z0-9]{1,8})$/i.test(safeExtension)) {
+    return safeExtension;
+  }
+
+  switch (mimeType) {
     case "image/jpeg":
       return ".jpg";
     case "image/png":
@@ -73,4 +98,29 @@ function mimeTypeToExtension(type: string) {
     default:
       return "";
   }
+}
+
+function serializeUploadError(
+  error: unknown,
+  context: { fileName: string; fileType: string; fileSize: number; prefix: string },
+) {
+  if (error instanceof Error) {
+    return {
+      ...context,
+      name: error.name,
+      message: error.message,
+      cause:
+        error.cause instanceof Error
+          ? { name: error.cause.name, message: error.cause.message }
+          : error.cause ?? null,
+      stack: error.stack,
+    };
+  }
+
+  return {
+    ...context,
+    name: "UnknownUploadError",
+    message: String(error),
+    cause: null,
+  };
 }
