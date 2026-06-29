@@ -107,12 +107,30 @@ export async function sendVerificationEmail(params: {
     </div>
   `;
 
-  await sendEmail({
+  const safeVerificationUrl = redactVerificationUrl(params.verificationUrl);
+
+  console.info(`[${APP_NAME} verification] Prepared verification email.`, {
     to: params.email,
-    subject,
-    html,
-    text,
+    verificationUrl: safeVerificationUrl,
+    expiresAt: params.expiresAt.toISOString(),
   });
+
+  try {
+    await sendEmail({
+      to: params.email,
+      subject,
+      html,
+      text,
+    });
+  } catch (error) {
+    console.error(`[${APP_NAME} verification] Failed to send verification email.`, {
+      to: params.email,
+      verificationUrl: safeVerificationUrl,
+      errorName: error instanceof Error ? error.name : "UnknownError",
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
+  }
 }
 
 export async function consumeEmailVerificationToken(token: string) {
@@ -171,4 +189,21 @@ function escapeHtml(value: string) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function redactVerificationUrl(value: string) {
+  try {
+    const url = new URL(value);
+    const token = url.searchParams.get("token");
+
+    if (token) {
+      const preview =
+        token.length <= 12 ? `${token.slice(0, 4)}...` : `${token.slice(0, 6)}...${token.slice(-4)}`;
+      url.searchParams.set("token", preview);
+    }
+
+    return url.toString();
+  } catch {
+    return value;
+  }
 }

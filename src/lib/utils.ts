@@ -82,6 +82,45 @@ export function slugify(value: string) {
 }
 
 export function absoluteUrl(path: string) {
-  const origin = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-  return new URL(path, origin).toString();
+  return new URL(path, getAppOrigin()).toString();
+}
+
+function getAppOrigin() {
+  const nextPublicOrigin = normalizeOrigin(process.env.NEXT_PUBLIC_APP_URL);
+  const nextAuthOrigin = normalizeOrigin(process.env.NEXTAUTH_URL);
+  const vercelProductionOrigin = normalizeOrigin(process.env.VERCEL_PROJECT_PRODUCTION_URL);
+  const vercelRuntimeOrigin = normalizeOrigin(process.env.VERCEL_URL);
+
+  const candidates =
+    process.env.NODE_ENV === "production"
+      ? [nextAuthOrigin, nextPublicOrigin, vercelProductionOrigin, vercelRuntimeOrigin].filter(
+          (origin) => origin && !isLocalOrigin(origin),
+        )
+      : [nextPublicOrigin, nextAuthOrigin, vercelProductionOrigin, vercelRuntimeOrigin].filter(Boolean);
+
+  return candidates[0] ?? "http://localhost:3000";
+}
+
+function normalizeOrigin(value?: string | null) {
+  const source = value?.trim();
+  if (!source) {
+    return undefined;
+  }
+
+  const withProtocol = /^https?:\/\//i.test(source) ? source : `https://${source}`;
+
+  try {
+    return new URL(withProtocol).origin;
+  } catch {
+    return undefined;
+  }
+}
+
+function isLocalOrigin(origin: string) {
+  try {
+    const hostname = new URL(origin).hostname.toLowerCase();
+    return hostname === "localhost" || hostname === "127.0.0.1";
+  } catch {
+    return false;
+  }
 }

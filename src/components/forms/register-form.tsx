@@ -16,8 +16,6 @@ type RegisterValues = z.infer<typeof registerSchema>;
 type RegisterResponse = {
   error?: string;
   redirectTo?: string;
-  requiresVerification?: boolean;
-  email?: string;
 };
 
 export function RegisterForm({
@@ -57,13 +55,8 @@ export function RegisterForm({
             throw new Error(payload.error ?? `${labels.registrationFailed}.`);
           }
 
-          toast.success(
-            payload.requiresVerification ? labels.verificationEmailSent : labels.accountCreated,
-          );
-          router.push(
-            payload.redirectTo ??
-              `/verify-email?email=${encodeURIComponent(payload.email ?? values.email)}&status=sent`,
-          );
+          toast.success(labels.accountCreated);
+          router.push(payload.redirectTo ?? "/login");
         } catch (error) {
           toast.error(error instanceof Error ? error.message : `${labels.registrationFailed}.`);
         } finally {
