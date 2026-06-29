@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getCurrentLocale, getDictionary, getStatusLabel } from "@/lib/i18n";
+import { getRenterDashboardLinks } from "@/lib/renter-navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -46,11 +47,7 @@ export default async function RenterDashboardPage() {
     <DashboardShell
       title={labels.renterDashboard}
       description={labels.renterDashboardDescription}
-      links={[
-        { label: labels.overview, href: "/dashboard/renter", active: true },
-        { label: labels.kyc, href: "/dashboard/kyc" },
-        { label: labels.browseCars, href: "/search" },
-      ]}
+      links={getRenterDashboardLinks("overview", locale)}
     >
       <div className="grid gap-4 md:grid-cols-3">
         <StatCard label={labels.upcomingBookings} value={upcomingBookings.length} />

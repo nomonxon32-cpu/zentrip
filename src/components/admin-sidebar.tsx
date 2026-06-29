@@ -3,16 +3,21 @@
 import Link from "next/link";
 
 import { useLocale } from "@/components/providers";
+import { getAdminNavigationLinks } from "@/lib/admin-navigation";
 import { cn } from "@/lib/utils";
 
+function isActiveLink(currentPath: string, href: string) {
+  if (href === "/admin") {
+    return currentPath === "/admin";
+  }
+
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+}
+
 export function AdminSidebar({ currentPath }: { currentPath: string }) {
-  const { labels } = useLocale();
+  const { locale, labels } = useLocale();
   const links = [
-    { href: "/admin", label: labels.overview },
-    { href: "/admin/users", label: labels.users },
-    { href: "/admin/kyc", label: labels.kyc },
-    { href: "/admin/listings", label: labels.listings },
-    { href: "/admin/bookings", label: labels.bookings },
+    ...getAdminNavigationLinks(locale),
     { href: "/admin/disputes", label: labels.disputes },
   ];
 
@@ -25,7 +30,7 @@ export function AdminSidebar({ currentPath }: { currentPath: string }) {
             href={link.href}
             className={cn(
               "block shrink-0 whitespace-nowrap rounded-2xl px-4 py-2.5 text-sm font-semibold transition lg:shrink lg:py-3",
-              currentPath === link.href ? "sidebar-link-active" : "sidebar-link",
+              isActiveLink(currentPath, link.href) ? "sidebar-link-active" : "sidebar-link",
             )}
           >
             {link.label}

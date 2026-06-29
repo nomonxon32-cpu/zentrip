@@ -7,12 +7,15 @@ import { EmptyState } from "@/components/empty-state";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getCurrentLocale, getDictionary } from "@/lib/i18n";
+import { getRenterDashboardLinks } from "@/lib/renter-navigation";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export default async function RenterBookingsPage() {
-  const user = await requireRole(Role.RENTER);
+  const [user, locale] = await Promise.all([requireRole(Role.RENTER), getCurrentLocale()]);
+  const labels = getDictionary(locale);
   const bookings = await db.booking.findMany({
     where: { renterId: user.id },
     include: {
@@ -30,7 +33,7 @@ export default async function RenterBookingsPage() {
 
   const sections = [
     {
-      title: "Upcoming and active",
+      title: locale === "uz" ? "Kutilayotgan va faol" : locale === "ru" ? "Предстоящие и активные" : "Upcoming and active",
       items: bookings.filter(
         (booking) =>
           booking.status === BookingStatus.PENDING_OWNER_APPROVAL ||
@@ -39,11 +42,16 @@ export default async function RenterBookingsPage() {
       ),
     },
     {
-      title: "Completed",
+      title: labels.completedTrips,
       items: bookings.filter((booking) => booking.status === BookingStatus.COMPLETED),
     },
     {
-      title: "Cancelled and rejected",
+      title:
+        locale === "uz"
+          ? "Bekor qilingan va rad etilgan"
+          : locale === "ru"
+            ? "Отмененные и отклоненные"
+            : "Cancelled and rejected",
       items: bookings.filter(
         (booking) =>
           booking.status === BookingStatus.CANCELLED || booking.status === BookingStatus.REJECTED,
@@ -53,14 +61,15 @@ export default async function RenterBookingsPage() {
 
   return (
     <DashboardShell
-      title="My bookings"
-      description="Review every renter booking in one place, from pending approvals to completed trips."
-      links={[
-        { label: "Overview", href: "/dashboard/renter" },
-        { label: "My bookings", href: "/dashboard/renter/bookings", active: true },
-        { label: "KYC", href: "/dashboard/kyc" },
-        { label: "Browse cars", href: "/search" },
-      ]}
+      title={labels.myBookings}
+      description={
+        locale === "uz"
+          ? "Barcha ijarachi bronlarini bir joyda ko'ring: tasdiq kutilayotgan so'rovlardan yakunlangan safargacha."
+          : locale === "ru"
+            ? "Просматривайте все бронирования арендатора в одном месте: от ожидающих одобрения до завершенных поездок."
+            : "Review every renter booking in one place, from pending approvals to completed trips."
+      }
+      links={getRenterDashboardLinks("bookings", locale)}
     >
       <div className="space-y-8">
         {sections.map((section) => (
@@ -83,7 +92,7 @@ export default async function RenterBookingsPage() {
                         />
                       ) : (
                         <div className="flex h-40 items-center justify-center text-sm font-semibold text-slate-500 dark:text-slate-400">
-                          No vehicle photo
+                          {labels.noPhotosUploaded}
                         </div>
                       )}
                     </div>
@@ -109,9 +118,12 @@ export default async function RenterBookingsPage() {
                       </div>
 
                       <div className="grid gap-3 sm:grid-cols-3">
-                        <Info label="Days" value={String(booking.days)} />
-                        <Info label="Total" value={`${booking.totalAmount.toLocaleString("en-US")} UZS`} />
-                        <Info label="Vehicle city" value={booking.vehicle.city} />
+                        <Info label={labels.daysLabel} value={String(booking.days)} />
+                        <Info label={labels.totalPayable} value={`${booking.totalAmount.toLocaleString("en-US")} UZS`} />
+                        <Info
+                          label={locale === "uz" ? "Avtomobil shahri" : locale === "ru" ? "Город автомобиля" : "Vehicle city"}
+                          value={booking.vehicle.city}
+                        />
                       </div>
                     </div>
                   </Link>
@@ -119,8 +131,20 @@ export default async function RenterBookingsPage() {
               </div>
             ) : (
               <EmptyState
-                title={`No ${section.title.toLowerCase()} bookings`}
-                description="This section updates automatically as owners approve, complete, or cancel your trips."
+                title={
+                  locale === "uz"
+                    ? `${section.title} bo'limida bronlar yo'q`
+                    : locale === "ru"
+                      ? `Нет бронирований в разделе ${section.title.toLowerCase()}`
+                      : `No ${section.title.toLowerCase()} bookings`
+                }
+                description={
+                  locale === "uz"
+                    ? "Egalar safarlaringizni tasdiqlashi, yakunlashi yoki bekor qilishi bilan bu bo'lim avtomatik yangilanadi."
+                    : locale === "ru"
+                      ? "Этот раздел обновится автоматически, когда владельцы подтвердят, завершат или отменят ваши поездки."
+                      : "This section updates automatically as owners approve, complete, or cancel your trips."
+                }
               />
             )}
           </section>

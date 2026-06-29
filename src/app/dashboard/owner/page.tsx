@@ -8,7 +8,7 @@ import { StatCard } from "@/components/stat-card";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getCurrentLocale, getDictionary } from "@/lib/i18n";
+import { getCurrentLocale, getDictionary, getStatusLabel } from "@/lib/i18n";
 import { getOwnerBookings } from "@/lib/owner-bookings";
 import { getOwnerDashboardLinks } from "@/lib/owner-navigation";
 import { formatCurrency } from "@/lib/utils";
@@ -54,6 +54,9 @@ export default async function OwnerDashboardPage() {
   const activeListings = vehicles.filter((vehicle) => vehicle.status === "ACTIVE").length;
   const pendingRequests = bookings.filter((booking) => booking.status === BookingStatus.PENDING_OWNER_APPROVAL);
   const pendingBookings = pendingRequests.length;
+  const upcomingApprovedBookings = bookings.filter(
+    (booking) => booking.status === BookingStatus.CONFIRMED || booking.status === BookingStatus.ACTIVE,
+  ).length;
   const monthlyEarnings = bookings
     .filter(
       (booking) =>
@@ -64,18 +67,29 @@ export default async function OwnerDashboardPage() {
     .reduce((sum, booking) => sum + booking.rentalAmount - booking.serviceFee, 0);
   const averageRating =
     reviews.length > 0 ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1) : labels.newLabel;
+  const title = locale === "uz" ? "Avtoparkingizni boshqaring" : locale === "ru" ? "Управляйте автопарком" : "Manage your fleet";
+  const description =
+    locale === "uz"
+      ? "Mashinalaringiz, bronlar va daromadni bitta boshqaruv panelida kuzating."
+      : locale === "ru"
+        ? "Держите свои автомобили, бронирования и доход в одном рабочем пространстве."
+        : "Keep your cars, bookings, and earnings in one management workspace.";
 
   return (
     <DashboardShell
-      title={labels.ownerDashboard}
-      description={labels.ownerDashboardDescription}
+      title={title}
+      description={description}
       links={getOwnerDashboardLinks("overview", locale)}
     >
       <div id="owner-earnings" className="grid gap-4 md:grid-cols-4">
         <StatCard label={labels.activeListings} value={activeListings} />
         <StatCard label={labels.pendingBookings} value={pendingBookings} accent="emerald" />
-        <StatCard label={labels.monthlyEarnings} value={monthlyEarnings} formatAsCurrency accent="slate" />
-        <StatCard label={labels.averageRating} value={averageRating} />
+        <StatCard
+          label={locale === "uz" ? "Tasdiqlangan safarlar" : locale === "ru" ? "Подтвержденные поездки" : "Approved trips"}
+          value={upcomingApprovedBookings}
+          accent="slate"
+        />
+        <StatCard label={labels.monthlyEarnings} value={monthlyEarnings} formatAsCurrency />
       </div>
 
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(420px,520px)]">
@@ -115,6 +129,55 @@ export default async function OwnerDashboardPage() {
         </div>
 
         <div className="space-y-6">
+          <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+                  {locale === "uz" ? "Tezkor boshqaruv" : locale === "ru" ? "Быстрое управление" : "Quick actions"}
+                </h2>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  {locale === "uz"
+                    ? "Yangi avtomobil qo'shing, bronlarni ko'ring yoki daromad tarixiga o'ting."
+                    : locale === "ru"
+                      ? "Добавьте автомобиль, откройте запросы на бронирование или перейдите к доходам."
+                      : "Add a new car, review booking requests, or jump into your earnings history."}
+                </p>
+              </div>
+              <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600 dark:bg-slate-800 dark:text-slate-200">
+                KYC {getStatusLabel(locale, user.kycStatus)}
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+                  {labels.averageRating}
+                </p>
+                <p className="mt-2 text-xl font-black text-slate-950 dark:text-slate-50">{averageRating}</p>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-950">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+                  {labels.kycStatus}
+                </p>
+                <p className="mt-2 text-xl font-black text-slate-950 dark:text-slate-50">
+                  {getStatusLabel(locale, user.kycStatus)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/dashboard/owner/listings/new" className="btn-primary rounded-full px-4 py-2 text-sm font-semibold transition">
+                {labels.addNewCar}
+              </Link>
+              <Link href="/dashboard/owner/bookings" className="btn-secondary rounded-full px-4 py-2 text-sm font-semibold transition">
+                {labels.bookingRequests}
+              </Link>
+              <Link href="/dashboard/owner/earnings" className="btn-secondary rounded-full px-4 py-2 text-sm font-semibold transition">
+                {labels.earnings}
+              </Link>
+            </div>
+          </div>
+
           <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.bookingRequests}</h2>

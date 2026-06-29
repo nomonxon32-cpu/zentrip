@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { Role } from "@prisma/client";
 import { ArrowRight, Building2, Check, MapPinned, Plane, Sparkles, Truck, WalletCards } from "lucide-react";
+import { redirect } from "next/navigation";
 
 import { FeaturedVehiclesStrip } from "@/components/featured-vehicles-strip";
 import { QuickFilterChips } from "@/components/quick-filter-chips";
 import { SearchBar } from "@/components/search-bar";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, getRoleHomePath } from "@/lib/auth";
 import { CITIES } from "@/lib/constants";
 import { getCurrentLocale, getDictionary } from "@/lib/i18n";
 import { getPartnerBandContent } from "@/lib/marketing";
@@ -14,6 +16,11 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const [currentUser, locale] = await Promise.all([getCurrentUser(), getCurrentLocale()]);
+
+  if (currentUser?.role === Role.ADMIN || currentUser?.role === Role.OWNER) {
+    redirect(getRoleHomePath(currentUser.role));
+  }
+
   const labels = getDictionary(locale);
   const partnerBand = getPartnerBandContent(locale);
   const [featuredVehicles, cityBrowseSummary] = await Promise.all([

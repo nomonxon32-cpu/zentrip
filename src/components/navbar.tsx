@@ -1,3 +1,5 @@
+import { Role } from "@prisma/client";
+
 import { NavbarClient } from "@/components/navbar-client";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserDropdownStats } from "@/lib/dropdown-stats";
@@ -6,9 +8,8 @@ import { getCurrentLocale, getDictionary } from "@/lib/i18n";
 export async function Navbar() {
   const [user, locale] = await Promise.all([getCurrentUser(), getCurrentLocale()]);
   const labels = getDictionary(locale);
-  // Public "List your car" entry points route through the /host landing page so
-  // owners and prospects see the partner value proposition before signing up.
-  const hostHref = "/host";
+  const hostHref =
+    user?.role === Role.OWNER ? "/dashboard/owner/listings/new" : user?.role === Role.ADMIN ? "/admin" : "/host";
   const dropdownStats = user ? await getUserDropdownStats(user) : null;
   const safeUser = user
     ? {
