@@ -66,8 +66,8 @@ export default async function RenterBookingDetailPage({
   const pickupAddress = booking.pickupLocation?.trim() || booking.vehicle.address;
 
   return (
-    <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8">
-      <section className="space-y-6">
+    <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-8 lg:px-8">
+      <section className="min-w-0 space-y-6">
         <div>
           <BackButton fallbackHref="/dashboard/renter" label={labels.backToBookings} />
         </div>
@@ -110,7 +110,7 @@ export default async function RenterBookingDetailPage({
         />
       </section>
 
-      <aside className="space-y-6">
+      <aside className="min-w-0 space-y-6">
         <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
           <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">Owner</h2>
           <p className="mt-4 font-semibold text-slate-950 dark:text-slate-50">{booking.owner.name}</p>
@@ -177,9 +177,9 @@ export default async function RenterBookingDetailPage({
 
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
+    <div className="flex flex-col gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
       <span className="shrink-0 text-sm text-slate-500 dark:text-slate-400">{label}</span>
-      <span className="min-w-0 text-right text-sm font-semibold text-slate-950 dark:text-slate-50">{value}</span>
+      <span className="min-w-0 text-sm font-semibold text-slate-950 dark:text-slate-50 sm:text-right">{value}</span>
     </div>
   );
 }

@@ -82,6 +82,7 @@ export function UploadBox({
         onClick={() => inputRef.current?.click()}
         className={cn(
           "flex w-full flex-col items-center justify-center gap-3 rounded-[2rem] border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center transition hover:border-sky-300 hover:bg-sky-50/60 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-sky-500 dark:hover:bg-slate-900",
+          "px-4 py-8 sm:px-6 sm:py-10",
           isUploading && "pointer-events-none opacity-60",
         )}
       >

@@ -19,6 +19,7 @@ export async function GET() {
     city: user.city,
     kycStatus: user.kycStatus,
     isSuspended: user.isSuspended,
+    emailVerifiedAt: user.emailVerifiedAt,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };

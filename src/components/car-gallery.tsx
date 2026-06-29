@@ -24,7 +24,7 @@ export function CarGallery({
           className="h-full w-full object-cover"
         />
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {galleryImages.map((image, index) => (
           <button
             key={image}

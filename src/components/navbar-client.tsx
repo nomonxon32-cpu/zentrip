@@ -63,12 +63,6 @@ export function NavbarClient(props: NavbarProps) {
 const menuLinkClass =
   "block whitespace-nowrap rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white";
 
-function dashboardHref(user: NonNullable<NavUser>) {
-  if (user.role === Role.ADMIN) return "/admin";
-  if (user.role === Role.OWNER) return "/dashboard/owner";
-  return "/dashboard/renter";
-}
-
 function homeHref(user: NavUser) {
   if (!user) return "/";
   if (user.role === Role.ADMIN) return "/admin";
@@ -139,7 +133,6 @@ function NavActions({
   user,
   dropdownStats,
   labels,
-  hostHref,
   showWhyChoose = false,
   menuAlwaysVisible = false,
   roleLinks,
@@ -221,7 +214,6 @@ function HomepageNavbar({
           user={user}
           dropdownStats={dropdownStats}
           labels={labels}
-          hostHref={hostHref}
           showWhyChoose
           menuAlwaysVisible
           roleLinks={roleLinks}
@@ -270,7 +262,7 @@ function DefaultNavbar({
           ))}
         </nav>
 
-        <NavActions user={user} dropdownStats={dropdownStats} labels={labels} hostHref={hostHref} roleLinks={roleLinks} />
+        <NavActions user={user} dropdownStats={dropdownStats} labels={labels} roleLinks={roleLinks} />
       </div>
     </header>
   );

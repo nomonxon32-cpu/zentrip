@@ -69,18 +69,18 @@ export default async function Home() {
   ];
 
   return (
-    <div className="space-y-20 pb-20">
-      <section className="mx-auto w-full max-w-[1400px] px-4 pt-8 sm:px-6 lg:px-8 lg:pt-10">
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-[linear-gradient(135deg,#020617_0%,#0f172a_46%,#334155_100%)] px-6 py-8 text-white shadow-2xl shadow-slate-950/15 dark:border-slate-800 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
+    <div className="space-y-16 pb-16 sm:space-y-20 sm:pb-20">
+      <section className="mx-auto w-full max-w-[1400px] px-4 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pt-10">
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-[linear-gradient(135deg,#020617_0%,#0f172a_46%,#334155_100%)] px-5 py-6 text-white shadow-2xl shadow-slate-950/15 dark:border-slate-800 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.18),transparent_34%)]" />
           <div className="absolute -left-24 top-10 h-56 w-56 rounded-full bg-sky-400/10 blur-3xl" />
           <div className="absolute -right-16 bottom-0 h-72 w-72 rounded-full bg-white/8 blur-3xl" />
 
-          <div className="relative mx-auto flex min-h-[280px] max-w-5xl flex-col items-center justify-center text-center sm:min-h-[360px] lg:min-h-[410px]">
-            <h1 className="max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <div className="relative mx-auto flex min-h-[240px] max-w-5xl flex-col items-center justify-center text-center sm:min-h-[360px] lg:min-h-[410px]">
+            <h1 className="max-w-3xl text-3xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
               {labels.heroTitle}
             </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-100 sm:mt-5 sm:text-lg sm:leading-8">
+            <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-100 sm:mt-5 sm:text-lg sm:leading-8">
               {labels.heroSubtitle}
             </p>
           </div>

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 
 import { SESSION_COOKIE } from "@/lib/constants";
 import { db } from "@/lib/db";
+import { isEmailVerified } from "@/lib/email-verification";
 import { ApiError } from "@/lib/http";
 
 type SessionPayload = {
@@ -107,6 +108,10 @@ export async function requireUser() {
     redirect("/suspended");
   }
 
+  if (!isEmailVerified(user)) {
+    redirect(`/verify-email?email=${encodeURIComponent(user.email)}&status=pending`);
+  }
+
   return user;
 }
 
@@ -142,6 +147,10 @@ export async function requireApiUser() {
 
   if (user.isSuspended) {
     throw new ApiError(403, "Suspended accounts cannot access this action.");
+  }
+
+  if (!isEmailVerified(user)) {
+    throw new ApiError(403, "Please verify your email before continuing.");
   }
 
   return user;

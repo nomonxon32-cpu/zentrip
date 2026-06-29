@@ -20,6 +20,7 @@ import { addDays, subDays } from "date-fns";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.emailVerificationToken.deleteMany();
   await prisma.notification.deleteMany();
   await prisma.dispute.deleteMany();
   await prisma.message.deleteMany();
@@ -48,6 +49,7 @@ async function main() {
       name: "Zentrip Admin",
       email: "admin@uzcar.uz",
       phone: "+998 90 000 00 01",
+      emailVerifiedAt: new Date(),
       passwordHash: adminPassword,
       role: Role.ADMIN,
       city: "Tashkent",
@@ -60,6 +62,7 @@ async function main() {
       name: "Jasur Mirzayev",
       email: "owner@uzcar.uz",
       phone: "+998 90 111 22 33",
+      emailVerifiedAt: new Date(),
       passwordHash: ownerPassword,
       role: Role.OWNER,
       city: "Tashkent",
@@ -73,6 +76,7 @@ async function main() {
       name: "Dilshod Karimov",
       email: "owner2@uzcar.uz",
       phone: "+998 93 444 55 66",
+      emailVerifiedAt: new Date(),
       passwordHash: owner2Password,
       role: Role.OWNER,
       city: "Samarkand",
@@ -86,6 +90,7 @@ async function main() {
       name: "Aziza Ismailova",
       email: "renter@uzcar.uz",
       phone: "+998 97 777 88 99",
+      emailVerifiedAt: new Date(),
       passwordHash: renterPassword,
       role: Role.RENTER,
       city: "Tashkent",
@@ -99,6 +104,7 @@ async function main() {
       name: "Bekzod Rasulov",
       email: "renter2@uzcar.uz",
       phone: "+998 90 222 33 44",
+      emailVerifiedAt: new Date(),
       passwordHash: renter2Password,
       role: Role.RENTER,
       city: "Bukhara",
@@ -111,6 +117,7 @@ async function main() {
       name: "Madina Sobirova",
       email: "renter3@uzcar.uz",
       phone: "+998 91 555 66 77",
+      emailVerifiedAt: new Date(),
       passwordHash: renter3Password,
       role: Role.RENTER,
       city: "Fergana",

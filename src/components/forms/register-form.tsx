@@ -13,6 +13,12 @@ import { CITIES } from "@/lib/constants";
 import { registerSchema } from "@/lib/validators";
 
 type RegisterValues = z.infer<typeof registerSchema>;
+type RegisterResponse = {
+  error?: string;
+  redirectTo?: string;
+  requiresVerification?: boolean;
+  email?: string;
+};
 
 export function RegisterForm({
   defaultRole = Role.RENTER,
@@ -46,21 +52,25 @@ export function RegisterForm({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(values),
           });
-          const payload = (await response.json()) as { error?: string; redirectTo?: string };
+          const payload = (await response.json()) as RegisterResponse;
           if (!response.ok) {
             throw new Error(payload.error ?? `${labels.registrationFailed}.`);
           }
 
-          toast.success(labels.accountCreated);
-          router.push(payload.redirectTo ?? "/");
-          router.refresh();
+          toast.success(
+            payload.requiresVerification ? labels.verificationEmailSent : labels.accountCreated,
+          );
+          router.push(
+            payload.redirectTo ??
+              `/verify-email?email=${encodeURIComponent(payload.email ?? values.email)}&status=sent`,
+          );
         } catch (error) {
           toast.error(error instanceof Error ? error.message : `${labels.registrationFailed}.`);
         } finally {
           setIsSubmitting(false);
         }
       })}
-      className="space-y-5 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950"
+      className="space-y-5 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950 sm:p-6"
     >
       <div className="space-y-2">
         <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">{labels.iWantToJoinAs}</label>

@@ -190,9 +190,9 @@ export function CheckoutForm({
           setIsSubmitting(false);
         }
       })}
-      className="grid gap-6 lg:grid-cols-[1.3fr_0.9fr]"
+      className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.9fr)]"
     >
-      <div className="space-y-6">
+      <div className="min-w-0 space-y-6">
         <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
           <h3 className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.tripDates}</h3>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
@@ -206,7 +206,7 @@ export function CheckoutForm({
           </p>
           <div className="mt-5">
             {monthlyMode ? (
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                     {monthlyLabels.pickupDate}
@@ -225,7 +225,7 @@ export function CheckoutForm({
                     ))}
                   </select>
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-slate-700 dark:bg-slate-950 md:col-span-2">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-slate-700 dark:bg-slate-950 sm:col-span-2">
                   <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{monthlyLabels.returnDate}</p>
                   <p className="mt-2 text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">
                     {computedMonthlyEndDate ? format(computedMonthlyEndDate, "MMM dd, yyyy") : "--"}
@@ -254,8 +254,8 @@ export function CheckoutForm({
 
         <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
           <h3 className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.pickupDetails}</h3>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <div className="md:col-span-2">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2">
               <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">{labels.pickupLocation}</label>
               <input
                 {...register("pickupLocation")}
@@ -323,20 +323,20 @@ export function CheckoutForm({
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="min-w-0 space-y-6">
         {summary ? (
           <div className="space-y-6">
             <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
               <h3 className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.tripSummary}</h3>
               <div className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <span>{labels.pickupLocation}</span>
                   <span className="font-semibold text-slate-950 dark:text-slate-50">
                     {selectedPickupLocation?.trim() ||
                       (locale === "uz" ? "E'lon shahri" : locale === "ru" ? "Город из объявления" : "Use listing city")}
                   </span>
                 </div>
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <span>{labels.tripDates}</span>
                   <span className="font-semibold text-slate-950 dark:text-slate-50">
                     {monthlyMode
@@ -345,7 +345,7 @@ export function CheckoutForm({
                   </span>
                 </div>
                 {monthlyMode && computedMonthlyEndDate ? (
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                     <span>{monthlyLabels.returnDate}</span>
                     <span className="font-semibold text-slate-950 dark:text-slate-50">
                       {format(computedMonthlyEndDate, "MMM dd, yyyy")}

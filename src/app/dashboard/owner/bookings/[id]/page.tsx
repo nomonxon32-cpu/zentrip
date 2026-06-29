@@ -36,8 +36,8 @@ export default async function OwnerBookingDetailPage({
     booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED;
 
   return (
-    <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8">
-      <section className="space-y-6">
+    <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-8 lg:px-8">
+      <section className="min-w-0 space-y-6">
         <div>
           <BackButton fallbackHref="/dashboard/owner/bookings" label={labels.backToBookingRequests} />
         </div>
@@ -57,7 +57,7 @@ export default async function OwnerBookingDetailPage({
               <CashPaymentBadge settled={paymentSettled} />
             </div>
           </div>
-          <div className="mt-6 grid gap-3 text-sm text-slate-600 dark:text-slate-300 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-6 grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2 xl:grid-cols-4">
             <Info label="Renter" value={booking.renter.name} />
             <Info label="Dates" value={`${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`} />
             <Info label="Days" value={`${booking.days} days`} />
@@ -74,7 +74,7 @@ export default async function OwnerBookingDetailPage({
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
           <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
             <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">Vehicle</h2>
             <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800">
@@ -132,7 +132,7 @@ export default async function OwnerBookingDetailPage({
         />
       </section>
 
-      <aside className="space-y-6">
+      <aside className="min-w-0 space-y-6">
         <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
           <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">Renter details</h2>
           <div className="mt-4 grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2">

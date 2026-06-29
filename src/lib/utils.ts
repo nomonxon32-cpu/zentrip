@@ -82,6 +82,6 @@ export function slugify(value: string) {
 }
 
 export function absoluteUrl(path: string) {
-  const origin = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const origin = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "http://localhost:3000";
   return new URL(path, origin).toString();
 }

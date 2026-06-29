@@ -7,7 +7,7 @@ export function DataTable({ columns, rows }: DataTableProps) {
   return (
     <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
       <div className="overflow-x-auto">
-        <table className="min-w-full text-left">
+        <table className="min-w-[720px] w-full text-left">
           <thead className="bg-slate-50 dark:bg-slate-900">
             <tr>
               {columns.map((column) => (

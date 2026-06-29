@@ -72,13 +72,13 @@ export function SearchBar({
         "grid gap-2 rounded-[1.8rem] border border-slate-200 bg-white p-2 shadow-2xl shadow-slate-950/10 dark:border-slate-800 dark:bg-slate-950 dark:shadow-black/30",
         compact
           ? "w-full"
-          : "w-full max-w-6xl md:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,0.8fr)_auto]",
+          : "w-full max-w-6xl sm:grid-cols-2 xl:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,0.8fr)_auto]",
       )}
     >
       <FieldShell
         label={whereLabel}
         icon={<MapPin className="h-4 w-4 text-sky-600" />}
-        className="md:border-r md:border-slate-200 md:rounded-none md:border-y-0 md:border-l-0 dark:md:border-slate-800"
+        className="sm:col-span-2 xl:col-span-1 xl:border-r xl:border-slate-200 xl:rounded-none xl:border-y-0 xl:border-l-0 dark:xl:border-slate-800"
       >
         <input
           name="location"
@@ -95,7 +95,7 @@ export function SearchBar({
         </datalist>
       </FieldShell>
 
-      <FieldShell label={fromDateLabel} className="md:border-r md:border-slate-200 md:rounded-none md:border-y-0 md:border-l-0 dark:md:border-slate-800">
+      <FieldShell label={fromDateLabel} className="xl:border-r xl:border-slate-200 xl:rounded-none xl:border-y-0 xl:border-l-0 dark:xl:border-slate-800">
         <input
           name="fromDate"
           type="date"
@@ -108,7 +108,7 @@ export function SearchBar({
       <FieldShell
         label={fromTimeLabel}
         icon={<Clock3 className="h-4 w-4 text-slate-400" />}
-        className="md:border-r md:border-slate-200 md:rounded-none md:border-y-0 md:border-l-0 dark:md:border-slate-800"
+        className="xl:border-r xl:border-slate-200 xl:rounded-none xl:border-y-0 xl:border-l-0 dark:xl:border-slate-800"
       >
         <input
           name="fromTime"
@@ -119,7 +119,7 @@ export function SearchBar({
         />
       </FieldShell>
 
-      <FieldShell label={untilDateLabel} className="md:border-r md:border-slate-200 md:rounded-none md:border-y-0 md:border-l-0 dark:md:border-slate-800">
+      <FieldShell label={untilDateLabel} className="xl:border-r xl:border-slate-200 xl:rounded-none xl:border-y-0 xl:border-l-0 dark:xl:border-slate-800">
         <input
           name="untilDate"
           type="date"
@@ -141,10 +141,10 @@ export function SearchBar({
 
       <button
         type="submit"
-        className="inline-flex min-h-[68px] w-full items-center justify-center gap-2 rounded-[1.2rem] bg-slate-950 px-5 py-4 text-sm font-semibold !text-white transition hover:bg-slate-800 hover:!text-white dark:bg-white dark:!text-slate-950 dark:hover:bg-slate-200 dark:hover:!text-slate-950 md:min-h-0 md:w-[68px] md:px-0"
+        className="inline-flex min-h-[68px] w-full items-center justify-center gap-2 rounded-[1.2rem] bg-slate-950 px-5 py-4 text-sm font-semibold !text-white transition hover:bg-slate-800 hover:!text-white dark:bg-white dark:!text-slate-950 dark:hover:bg-slate-200 dark:hover:!text-slate-950 sm:col-span-2 xl:min-h-0 xl:w-[68px] xl:px-0"
       >
         <Search className="h-4 w-4" />
-        <span className="md:hidden">{searchLabel}</span>
+        <span className="xl:hidden">{searchLabel}</span>
       </button>
     </form>
   );
@@ -162,7 +162,7 @@ function FieldShell({
   children: React.ReactNode;
 }) {
   return (
-    <label className={cn("flex min-h-[72px] flex-col justify-center rounded-[1.2rem] border border-slate-200 px-4 py-3 md:min-h-[68px] md:border-0 dark:border-slate-800", className)}>
+    <label className={cn("flex min-h-[72px] flex-col justify-center rounded-[1.2rem] border border-slate-200 px-4 py-3 xl:min-h-[68px] xl:border-0 dark:border-slate-800", className)}>
       <span className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
         {label}
       </span>

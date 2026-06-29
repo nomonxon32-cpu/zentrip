@@ -319,7 +319,7 @@ export function VehicleForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="btn-primary rounded-2xl px-6 py-3 font-semibold transition"
+        className="btn-primary w-full rounded-2xl px-6 py-3 font-semibold transition sm:w-auto"
       >
         {isSubmitting ? "Saving..." : mode === "create" ? "Submit for review" : "Save changes"}
       </button>

@@ -44,7 +44,7 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
         <Providers initialLocale={locale}>
-          <div className="relative flex min-h-screen flex-col overflow-hidden">
+          <div className="relative flex min-h-screen flex-col overflow-x-clip">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-[28rem] bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.12),transparent_60%)]" />
             <Navbar />
             <main className="relative flex-1">{children}</main>

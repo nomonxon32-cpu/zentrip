@@ -136,7 +136,7 @@ export default async function SearchPage({
       : `${vehicles.length} ${labels.carsFoundPlural}`;
 
   return (
-    <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[290px_1fr] lg:px-8">
+    <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8 lg:px-8">
       <aside className="surface-card h-fit rounded-[2rem] p-4 sm:p-6 dark:bg-slate-900">
         <div className="hidden lg:block">
           <h1 className="text-2xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.searchCarsTitle}</h1>
@@ -228,9 +228,9 @@ export default async function SearchPage({
         </FilterDisclosure>
       </aside>
 
-      <section className="space-y-6">
+      <section className="min-w-0 space-y-6">
         <div className="space-y-5">
-          <div className="grid items-start gap-4 lg:grid-cols-[1fr_minmax(360px,520px)_160px] lg:items-end">
+          <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,520px)_160px] xl:items-end">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-600">
                 {labels.searchResults}
@@ -247,10 +247,10 @@ export default async function SearchPage({
                 </p>
               ) : null}
             </div>
-            <div className="w-full">
+            <div className="w-full xl:justify-self-center">
               <CarNameSearch placeholder={labels.searchByCarName} />
             </div>
-            <div className="flex lg:justify-end">
+            <div className="flex xl:justify-end">
               <Link
                 href="/"
                 className="whitespace-nowrap text-sm font-semibold text-slate-950 transition hover:text-slate-700 dark:text-slate-50 dark:hover:text-slate-300"

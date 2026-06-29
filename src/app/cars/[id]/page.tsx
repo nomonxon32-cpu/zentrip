@@ -70,8 +70,8 @@ export default async function CarDetailPage({
   });
 
   return (
-    <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-start lg:px-8">
-      <section className="space-y-8">
+    <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:items-start lg:gap-8 lg:px-8">
+      <section className="min-w-0 space-y-8">
         <div>
           <BackButton fallbackHref="/search" label={labels.backToSearch} />
         </div>
@@ -82,16 +82,16 @@ export default async function CarDetailPage({
               {vehicle.city}
             </span>
           </div>
-          <div className="flex flex-wrap items-start justify-between gap-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-6">
             <div>
-              <h1 className="text-4xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+              <h1 className="text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50 sm:text-4xl">
                 {vehicle.make} {vehicle.model}
               </h1>
               <p className="mt-2 text-base text-slate-500 dark:text-slate-400">
                 {vehicle.year} / {getCategoryLabel(locale, vehicle.category)} / {getTransmissionLabel(locale, vehicle.transmission)} / {getFuelTypeLabel(locale, vehicle.fuelType)}
               </p>
             </div>
-            <div className="text-right">
+            <div className="sm:text-right">
               <p className="text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">
                 {formatCurrency(vehicle.dailyPrice)}
               </p>
@@ -178,7 +178,7 @@ export default async function CarDetailPage({
         </div>
 
         <div className="rounded-[2rem] border border-emerald-200 bg-emerald-50/60 p-6 dark:border-emerald-900 dark:bg-emerald-950/30">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <h2 className="inline-flex items-center gap-2 text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">
               <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               {labels.protectionTitle}
@@ -209,7 +209,7 @@ export default async function CarDetailPage({
         </div>
       </section>
 
-      <aside className="w-full space-y-6">
+      <aside className="min-w-0 w-full space-y-6">
         <BookingCard
           vehicleId={vehicle.id}
           dailyPrice={vehicle.dailyPrice}

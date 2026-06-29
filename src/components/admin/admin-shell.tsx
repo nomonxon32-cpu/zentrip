@@ -14,9 +14,9 @@ export function AdminShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-8">
+    <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-8 lg:px-8">
       <AdminSidebar currentPath={currentPath} />
-      <section className="space-y-6">
+      <section className="min-w-0 space-y-6">
         {backAction ? <div>{backAction}</div> : null}
         <div>
           <h1 className="text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">{title}</h1>

@@ -117,6 +117,7 @@ model User {
   id                String         @id @default(cuid())
   name              String
   email             String         @unique
+  emailVerifiedAt   DateTime?
   phone             String
   passwordHash      String
   role              Role
@@ -139,8 +140,20 @@ model User {
   notifications     Notification[]
   disputesOpened    Dispute[]      @relation("DisputeOpenedBy")
   favorites         Favorite[]
+  emailVerificationTokens EmailVerificationToken[]
 
   @@index([role, kycStatus])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
 }
 
 model KycDocument {

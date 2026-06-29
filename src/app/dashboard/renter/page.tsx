@@ -60,7 +60,7 @@ export default async function RenterDashboardPage() {
       </div>
 
       <section className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
-        <div className="mb-5 flex items-center justify-between gap-4">
+        <div className="mb-5 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
           <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.upcomingAndActive}</h2>
           <Link href="/search" className="text-sm font-semibold text-sky-600 dark:text-sky-400">
             {labels.bookAnotherCar}
@@ -69,12 +69,12 @@ export default async function RenterDashboardPage() {
         <div className="space-y-4">
           {upcomingBookings.length ? (
             upcomingBookings.map((booking) => (
-              <Link
-                key={booking.id}
-                href={`/dashboard/renter/bookings/${booking.id}`}
-                className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 p-4 transition hover:border-sky-200 hover:bg-sky-50/40 dark:border-slate-800 dark:hover:border-slate-700 dark:hover:bg-slate-900"
-              >
-                <div>
+                <Link
+                  key={booking.id}
+                  href={`/dashboard/renter/bookings/${booking.id}`}
+                  className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-slate-200 p-4 transition hover:border-sky-200 hover:bg-sky-50/40 sm:flex-row sm:flex-wrap sm:items-center dark:border-slate-800 dark:hover:border-slate-700 dark:hover:bg-slate-900"
+                >
+                  <div>
                   <p className="font-semibold text-slate-950 dark:text-slate-50">
                     {booking.vehicle.make} {booking.vehicle.model}
                   </p>
@@ -103,7 +103,7 @@ export default async function RenterDashboardPage() {
                 <Link
                   key={booking.id}
                   href={`/dashboard/renter/bookings/${booking.id}`}
-                  className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 p-4 dark:border-slate-800"
+                  className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center dark:border-slate-800"
                 >
                   <div>
                     <p className="font-semibold text-slate-950 dark:text-slate-50">
