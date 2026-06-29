@@ -49,7 +49,7 @@ export default async function AdminUserDetailPage({
       description="Full account context for moderation, support, and compliance review."
       backAction={<BackButton fallbackHref="/admin/users" label={labels.backToUsers} />}
     >
-      <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+      <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <div className="space-y-6">
           <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
             <div className="flex flex-wrap gap-3">
@@ -93,7 +93,7 @@ export default async function AdminUserDetailPage({
             <div className="mt-4 space-y-3">
               {user.ownedVehicles.length ? (
                 user.ownedVehicles.map((vehicle) => (
-                  <div key={vehicle.id} className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
+                  <div key={vehicle.id} className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center dark:border-slate-700">
                     <div>
                       <p className="font-semibold text-slate-950 dark:text-slate-50">
                         {vehicle.make} {vehicle.model}
@@ -114,7 +114,7 @@ export default async function AdminUserDetailPage({
             <div className="mt-4 space-y-3">
               {user.bookingsAsRenter.length ? (
                 user.bookingsAsRenter.map((booking) => (
-                  <div key={booking.id} className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
+                  <div key={booking.id} className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center dark:border-slate-700">
                     <div>
                       <p className="font-semibold text-slate-950 dark:text-slate-50">
                         {booking.vehicle.make} {booking.vehicle.model}

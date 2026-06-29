@@ -24,7 +24,7 @@ export default async function OwnerListingsPage() {
       description={labels.ownerListingsDescription}
       links={getOwnerDashboardLinks("listings", locale)}
     >
-      <div className="surface-card flex flex-wrap items-center justify-between gap-4 rounded-[2rem] p-6 dark:bg-slate-900">
+      <div className="surface-card flex flex-col items-start justify-between gap-4 rounded-[2rem] p-5 dark:bg-slate-900 sm:flex-row sm:items-center sm:p-6">
         <div>
           <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.myListings}</h2>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
@@ -37,7 +37,7 @@ export default async function OwnerListingsPage() {
         </div>
         <Link
           href="/dashboard/owner/listings/new"
-          className="btn-primary rounded-full px-4 py-2 text-sm font-semibold transition"
+          className="btn-primary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto"
         >
           {labels.addNewCar}
         </Link>
@@ -81,7 +81,7 @@ export default async function OwnerListingsPage() {
                     <StatusBadge value={vehicle.status} />
                   </div>
 
-                  <div className="grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-3">
+                  <div className="grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2 xl:grid-cols-3">
                     <Info label={labels.completedTrips} value={String(vehicle.completedTrips)} />
                     <Info label={labels.earnings} value={formatCurrency(vehicle.totalEarned)} />
                     <Info
@@ -98,22 +98,22 @@ export default async function OwnerListingsPage() {
                     />
                   </div>
 
-                  <div className="flex flex-wrap gap-3">
+                  <div className="grid gap-3 sm:flex sm:flex-wrap">
                     <Link
                       href={`/dashboard/owner/listings/${vehicle.id}/edit`}
-                      className="btn-secondary rounded-full px-4 py-2 text-sm font-semibold transition"
+                      className="btn-secondary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto"
                     >
                       {labels.edit}
                     </Link>
                     <Link
                       href={`/dashboard/owner/listings/${vehicle.id}/edit`}
-                      className="btn-secondary rounded-full px-4 py-2 text-sm font-semibold transition"
+                      className="btn-secondary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto"
                     >
                       {labels.manageAvailability}
                     </Link>
                     <Link
                       href={`/dashboard/owner/earnings/${vehicle.id}`}
-                      className="btn-secondary rounded-full px-4 py-2 text-sm font-semibold transition"
+                      className="btn-secondary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto"
                     >
                       {labels.viewEarnings}
                     </Link>

@@ -120,10 +120,10 @@ export function OwnerBookingRequestCard({
             <Info label={labels.city} value={booking.renter.city || labels.any} />
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center">
             <Link
               href={`/dashboard/owner/bookings/${booking.id}`}
-              className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-950 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-slate-50"
+              className="inline-flex w-full items-center justify-center rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-950 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-slate-50 sm:w-auto"
             >
               {labels.viewRequest}
             </Link>
@@ -148,9 +148,9 @@ function Info({ label, value }: { label: string; value: string }) {
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
+    <div className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
       <span className="shrink-0 text-slate-500 dark:text-slate-400">{label}</span>
-      <span className="min-w-0 text-right font-semibold text-slate-950 dark:text-slate-50">{value}</span>
+      <span className="min-w-0 font-semibold text-slate-950 dark:text-slate-50 sm:text-right">{value}</span>
     </div>
   );
 }

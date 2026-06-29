@@ -69,7 +69,7 @@ export default async function OwnerVehicleEarningsPage({
             )}
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <StatCard label={locale === "uz" ? "Jami daromad" : locale === "ru" ? "Общий доход" : "Total earned"} value={summary.totalEarned} formatAsCurrency />
             <StatCard label={labels.completedTrips} value={summary.completedTrips} accent="emerald" />
             <StatCard label={locale === "uz" ? "O'rtacha safar qiymati" : locale === "ru" ? "Средняя стоимость поездки" : "Average trip value"} value={summary.averageTripValue} formatAsCurrency accent="slate" />

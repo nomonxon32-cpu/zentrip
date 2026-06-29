@@ -212,7 +212,7 @@ export function VehicleForm({
       </div>
 
       <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
-        <div className="mb-4 flex items-center justify-between gap-4">
+        <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <h3 className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">Blocked dates</h3>
             <p className="theme-help text-sm">Add dates when the car should be unavailable.</p>
@@ -227,7 +227,7 @@ export function VehicleForm({
         </div>
         <div className="space-y-3">
           {fields.map((field, index) => (
-            <div key={field.id} className="grid gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-700 md:grid-cols-[1fr_1fr_2fr_auto]">
+            <div key={field.id} className="grid gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-700 xl:grid-cols-[1fr_1fr_2fr_auto]">
               <input {...register(`availabilityBlocks.${index}.startDate`)} type="date" className="input" />
               <input {...register(`availabilityBlocks.${index}.endDate`)} type="date" className="input" />
               <input {...register(`availabilityBlocks.${index}.reason`)} placeholder="Reason" className="input" />

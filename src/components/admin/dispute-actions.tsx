@@ -57,7 +57,7 @@ export function DisputeActions({ disputeId }: { disputeId: string }) {
             setIsSubmitting(false);
           }
         }}
-        className="btn-primary rounded-full px-4 py-2 text-sm font-semibold transition"
+        className="btn-primary w-full rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto"
       >
         {isSubmitting ? labels.working : labels.save}
       </button>

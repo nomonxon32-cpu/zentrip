@@ -30,7 +30,7 @@ export default async function OwnerEarningsPage() {
       }
       links={getOwnerDashboardLinks("earnings", locale)}
     >
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label={locale === "uz" ? "Jami daromad" : locale === "ru" ? "Общий доход" : "Total earned"} value={summary.totalEarned} formatAsCurrency />
         <StatCard label={locale === "uz" ? "Shu oy" : locale === "ru" ? "За месяц" : "This month"} value={summary.thisMonthEarned} formatAsCurrency accent="emerald" />
         <StatCard label={labels.completedTrips} value={summary.completedTrips} />
@@ -72,22 +72,22 @@ export default async function OwnerEarningsPage() {
                     <StatusBadge value={vehicle.status} />
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                     <Info label={labels.completedTrips} value={String(vehicle.completedTrips)} />
                     <Info label={labels.earnings} value={formatCurrency(vehicle.totalEarned)} />
                     <Info label={labels.perDay} value={formatCurrency(vehicle.dailyPrice)} />
                   </div>
 
-                  <div className="flex flex-wrap gap-3">
+                  <div className="grid gap-3 sm:flex sm:flex-wrap">
                     <Link
                       href={`/dashboard/owner/earnings/${vehicle.id}`}
-                      className="btn-primary rounded-full px-4 py-2 text-sm font-semibold transition"
+                      className="btn-primary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto"
                     >
                       {labels.viewHistory}
                     </Link>
                     <Link
                       href={`/dashboard/owner/listings/${vehicle.id}/edit`}
-                      className="btn-secondary rounded-full px-4 py-2 text-sm font-semibold transition"
+                      className="btn-secondary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto"
                     >
                       {labels.edit}
                     </Link>

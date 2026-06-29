@@ -73,22 +73,22 @@ export default async function AdminAnalyticsPage() {
             : "Review live bookings, gross volume, and supply distribution across cities."
       }
     >
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label={locale === "uz" ? "Faol bronlar" : locale === "ru" ? "Активные бронирования" : "Active bookings"} value={activeBookings} />
         <StatCard label={locale === "uz" ? "Yakunlangan safarlar" : locale === "ru" ? "Завершенные поездки" : "Completed trips"} value={completedBookings} accent="emerald" />
         <StatCard label={locale === "uz" ? "Faol e'lonlar" : locale === "ru" ? "Активные объявления" : "Active listings"} value={liveListings} />
         <StatCard label={locale === "uz" ? "Aylanma hajm" : locale === "ru" ? "Оборот" : "Gross volume"} value={grossVolume} formatAsCurrency accent="slate" />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-        <section className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
+      <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
+        <section className="surface-card rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6">
           <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">
             {locale === "uz" ? "Shaharlar bo'yicha taklif" : locale === "ru" ? "Предложение по городам" : "Supply by city"}
           </h2>
           <div className="mt-5 space-y-3">
             {cities.length ? (
               cities.map(([city, count]) => (
-                <div key={city} className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
+                <div key={city} className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center dark:border-slate-800">
                   <span className="font-semibold text-slate-950 dark:text-slate-50">{city}</span>
                   <span className="text-sm text-slate-500 dark:text-slate-400">{count}</span>
                 </div>
@@ -108,7 +108,7 @@ export default async function AdminAnalyticsPage() {
           </div>
         </section>
 
-        <section className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
+        <section className="surface-card rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6">
           <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">
             {locale === "uz" ? "Yangi foydalanuvchilar" : locale === "ru" ? "Новые пользователи" : "Recent users"}
           </h2>

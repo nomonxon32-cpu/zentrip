@@ -1,11 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { BrandLogo } from "@/components/brand-logo";
-import { getCurrentLocale, getDictionary } from "@/lib/i18n";
+import { useLocale } from "@/components/providers";
 
-export async function Footer() {
-  const locale = await getCurrentLocale();
-  const labels = getDictionary(locale);
+export function Footer() {
+  const pathname = usePathname();
+  const { locale, labels } = useLocale();
+
+  if (pathname.startsWith("/admin") || pathname.startsWith("/dashboard")) {
+    return null;
+  }
 
   return (
     <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">

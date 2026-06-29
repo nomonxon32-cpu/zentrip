@@ -33,7 +33,7 @@ export default async function AdminDisputesPage() {
     >
       <div className="grid gap-6">
         {disputes.map((dispute) => (
-          <div key={dispute.id} className="surface-card grid gap-6 rounded-[2rem] p-6 dark:bg-slate-900 lg:grid-cols-[0.9fr_1.1fr]">
+          <div key={dispute.id} className="surface-card grid gap-6 rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6 xl:grid-cols-[0.9fr_1.1fr]">
             <div className="space-y-3">
               <StatusBadge value={dispute.status} />
               <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-slate-50">{dispute.reason}</h2>

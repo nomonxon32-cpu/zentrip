@@ -32,7 +32,7 @@ export default async function AdminListingsPage() {
     >
       <div className="grid gap-6">
         {listings.map((listing) => (
-          <div key={listing.id} className="surface-card grid gap-6 rounded-[2rem] p-6 dark:bg-slate-900 lg:grid-cols-[0.8fr_1.2fr]">
+          <div key={listing.id} className="surface-card grid gap-6 rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6 xl:grid-cols-[0.8fr_1.2fr]">
             <div className="space-y-3">
               <StatusBadge value={listing.status} />
               <div>

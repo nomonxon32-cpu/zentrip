@@ -32,9 +32,9 @@ export default async function AdminKycPage() {
       <div className="grid gap-6">
         {documents.length ? (
           documents.map((document) => (
-            <div key={document.id} className="surface-card grid gap-6 rounded-[2rem] p-6 dark:bg-slate-900 lg:grid-cols-[0.9fr_1.1fr]">
+            <div key={document.id} className="surface-card grid gap-6 rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6 xl:grid-cols-[0.9fr_1.1fr]">
               <div className="space-y-4">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
                   <div>
                     <p className="font-semibold text-slate-950 dark:text-slate-50">{document.user.name}</p>
                     <p className="text-sm text-slate-500 dark:text-slate-400">{document.user.email}</p>
@@ -58,7 +58,7 @@ export default async function AdminKycPage() {
             </div>
           ))
         ) : (
-          <div className="surface-card rounded-[2rem] p-10 text-center dark:bg-slate-900">
+          <div className="surface-card rounded-[2rem] p-6 text-center dark:bg-slate-900 sm:p-10">
             <p className="text-sm text-slate-500 dark:text-slate-400">{labels.noPendingKyc}</p>
           </div>
         )}

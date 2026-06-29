@@ -16,9 +16,9 @@ export function DashboardShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-8 lg:px-8">
-      <aside className="surface-card h-fit overflow-hidden rounded-[2rem] p-3 lg:p-4 dark:bg-slate-900">
-        <div className="flex gap-2 overflow-x-auto lg:flex-col lg:gap-3 lg:overflow-visible">
+    <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 sm:px-6 sm:py-8 xl:grid-cols-[240px_minmax(0,1fr)] xl:gap-8 lg:px-8">
+      <aside className="min-w-0 surface-card h-fit overflow-hidden rounded-[2rem] p-3 lg:p-4 dark:bg-slate-900">
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 overscroll-x-contain xl:flex-col xl:gap-3 xl:overflow-visible xl:px-0 xl:pb-0">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -36,7 +36,7 @@ export function DashboardShell({
       <section className="min-w-0 space-y-6">
         {backAction ? <div>{backAction}</div> : null}
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">{title}</h1>
+          <h1 className="text-2xl font-black tracking-tight text-slate-950 dark:text-slate-50 sm:text-3xl">{title}</h1>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500 dark:text-slate-400">{description}</p>
         </div>
         {children}

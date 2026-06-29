@@ -22,8 +22,8 @@ export function AdminSidebar({ currentPath }: { currentPath: string }) {
   ];
 
   return (
-    <aside className="surface-card h-fit rounded-[2rem] p-3 lg:p-4 dark:bg-slate-900">
-      <div className="flex gap-2 overflow-x-auto lg:flex-col lg:gap-3 lg:overflow-visible">
+    <aside className="min-w-0 surface-card h-fit overflow-hidden rounded-[2rem] p-3 lg:p-4 dark:bg-slate-900">
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 overscroll-x-contain xl:flex-col xl:gap-3 xl:overflow-visible xl:px-0 xl:pb-0">
         {links.map((link) => (
           <Link
             key={link.href}

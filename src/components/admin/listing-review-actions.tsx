@@ -15,7 +15,7 @@ export function ListingReviewActions({ listingId }: { listingId: string }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-3">
+      <div className="grid gap-3 sm:flex sm:flex-wrap">
         <ApiActionButton
           endpoint={`/api/admin/listings/${listingId}`}
           payload={{ action: "APPROVE" }}
@@ -63,7 +63,7 @@ export function ListingReviewActions({ listingId }: { listingId: string }) {
             setIsRejecting(false);
           }
         }}
-        className="btn-danger rounded-full px-4 py-2 text-sm font-semibold transition"
+        className="btn-danger w-full rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto"
       >
         {isRejecting ? labels.working : labels.reject}
       </button>

@@ -40,14 +40,14 @@ export default async function EditListingPage({
       <div className="mb-6">
         <BackButton fallbackHref="/dashboard/owner/listings" label={labels.backToListings} />
       </div>
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-600">Listing editor</p>
           <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">
             {vehicle.make} {vehicle.model}
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="grid w-full gap-3 sm:flex sm:w-auto sm:flex-wrap sm:items-center">
           <StatusBadge value={vehicle.status} />
           <ApiActionButton
             endpoint={`/api/listings/${vehicle.id}`}

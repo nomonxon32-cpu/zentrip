@@ -50,6 +50,7 @@ type NavbarProps = {
 export function NavbarClient(props: NavbarProps) {
   const pathname = usePathname();
   const { locale } = useLocale();
+  const isManagementRoute = pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
 
   const roleLinks = getRoleTopLinks(props.user, pathname, locale, props.labels, props.hostHref);
 
@@ -57,7 +58,7 @@ export function NavbarClient(props: NavbarProps) {
     return <HomepageNavbar {...props} roleLinks={roleLinks} />;
   }
 
-  return <DefaultNavbar {...props} roleLinks={roleLinks} />;
+  return <DefaultNavbar {...props} roleLinks={roleLinks} showPromoBanner={!isManagementRoute} />;
 }
 
 const menuLinkClass =
@@ -229,19 +230,23 @@ function DefaultNavbar({
   labels,
   hostHref,
   roleLinks,
+  showPromoBanner = true,
 }: NavbarProps & {
   roleLinks: Array<{ href: string; label: string; active?: boolean }>;
+  showPromoBanner?: boolean;
 }) {
   return (
     <header className="sticky top-0 z-50 border-b border-white/70 bg-[rgba(248,250,252,0.9)] backdrop-blur-xl dark:border-slate-800/70 dark:bg-[rgba(2,6,23,0.92)]">
-      <div className="border-b border-slate-200/70 bg-slate-950 px-4 py-2 text-white sm:px-6 lg:px-8 dark:border-slate-800/70">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-2 text-sm sm:flex-row sm:items-center">
-          <p className="font-medium text-slate-100">{labels.hostBanner}</p>
-          <Link href={hostHref} className="font-semibold text-sky-300 transition hover:text-white">
-            {labels.startHosting}
-          </Link>
+      {showPromoBanner ? (
+        <div className="border-b border-slate-200/70 bg-slate-950 px-4 py-2 text-white sm:px-6 lg:px-8 dark:border-slate-800/70">
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-2 text-sm sm:flex-row sm:items-center">
+            <p className="font-medium text-slate-100">{labels.hostBanner}</p>
+            <Link href={hostHref} className="font-semibold text-sky-300 transition hover:text-white">
+              {labels.startHosting}
+            </Link>
+          </div>
         </div>
-      </div>
+      ) : null}
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <Link href={homeHref(user)} aria-label={`${labels.appName} home`} className="flex items-center">
           <BrandLogo iconClassName="h-8 w-8 sm:h-9 sm:w-9" wordmarkClassName="text-lg sm:text-xl" />

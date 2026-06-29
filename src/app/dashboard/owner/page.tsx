@@ -81,7 +81,7 @@ export default async function OwnerDashboardPage() {
       description={description}
       links={getOwnerDashboardLinks("overview", locale)}
     >
-      <div id="owner-earnings" className="grid gap-4 md:grid-cols-4">
+      <div id="owner-earnings" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label={labels.activeListings} value={activeListings} />
         <StatCard label={labels.pendingBookings} value={pendingBookings} accent="emerald" />
         <StatCard
@@ -93,7 +93,7 @@ export default async function OwnerDashboardPage() {
       </div>
 
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(420px,520px)]">
-        <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
+        <div className="surface-card rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6">
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.myListings}</h2>
             <Link href="/dashboard/owner/listings" className="text-sm font-semibold text-sky-600 dark:text-sky-400">
@@ -129,7 +129,7 @@ export default async function OwnerDashboardPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
+          <div className="surface-card rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">
@@ -165,20 +165,20 @@ export default async function OwnerDashboardPage() {
               </div>
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Link href="/dashboard/owner/listings/new" className="btn-primary rounded-full px-4 py-2 text-sm font-semibold transition">
+            <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap">
+              <Link href="/dashboard/owner/listings/new" className="btn-primary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto">
                 {labels.addNewCar}
               </Link>
-              <Link href="/dashboard/owner/bookings" className="btn-secondary rounded-full px-4 py-2 text-sm font-semibold transition">
+              <Link href="/dashboard/owner/bookings" className="btn-secondary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto">
                 {labels.bookingRequests}
               </Link>
-              <Link href="/dashboard/owner/earnings" className="btn-secondary rounded-full px-4 py-2 text-sm font-semibold transition">
+              <Link href="/dashboard/owner/earnings" className="btn-secondary inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition sm:w-auto">
                 {labels.earnings}
               </Link>
             </div>
           </div>
 
-          <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
+          <div className="surface-card rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.bookingRequests}</h2>
               <Link href="/dashboard/owner/bookings" className="text-sm font-semibold text-sky-600 dark:text-sky-400">
@@ -199,7 +199,7 @@ export default async function OwnerDashboardPage() {
             </div>
           </div>
 
-          <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
+          <div className="surface-card rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6">
             <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.recentMessages}</h2>
             <div className="mt-5 space-y-4">
               {messages.length ? (
