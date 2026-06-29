@@ -136,7 +136,7 @@ function NavActions({
   showWhyChoose = false,
   menuAlwaysVisible = false,
   roleLinks,
-}: NavbarProps & {
+}: Pick<NavbarProps, "user" | "dropdownStats" | "labels"> & {
   showWhyChoose?: boolean;
   menuAlwaysVisible?: boolean;
   roleLinks: Array<{ href: string; label: string; active?: boolean }>;
