@@ -9,6 +9,8 @@ import { CarGallery } from "@/components/car-gallery";
 import { ReviewCard } from "@/components/review-card";
 import { StatusBadge } from "@/components/status-badge";
 import { getDisabledDateIntervals } from "@/lib/availability";
+import { getCurrentUser } from "@/lib/auth";
+import { canRevealVehicleSensitiveDetails } from "@/lib/booking-visibility";
 import { getCategoryLabel, getCurrentLocale, getDictionary, getFuelTypeLabel, getTransmissionLabel } from "@/lib/i18n";
 import { getVehicleDetail } from "@/lib/queries";
 import { approximateArea, formatCurrency, formatDate, maskPlateNumber } from "@/lib/utils";
@@ -22,7 +24,12 @@ export default async function CarDetailPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [resolvedParams, query, locale] = await Promise.all([params, searchParams, getCurrentLocale()]);
+  const [resolvedParams, query, locale, currentUser] = await Promise.all([
+    params,
+    searchParams,
+    getCurrentLocale(),
+    getCurrentUser(),
+  ]);
   const labels = getDictionary(locale);
   const vehicle = await getVehicleDetail(resolvedParams.id);
 
@@ -48,6 +55,19 @@ export default async function CarDetailPage({
   const initialEndTime = readQueryValue(query.untilTime);
   const initialDurationMonths = Number(readQueryValue(query.durationMonths) || "1");
   const monthlyMode = vehicle.monthlyAvailable || readQueryValue(query.filter) === "monthly";
+  const canRevealSensitiveDetails = canRevealVehicleSensitiveDetails({
+    viewer: currentUser
+      ? {
+          id: currentUser.id,
+          role: currentUser.role,
+        }
+      : null,
+    vehicleOwnerId: vehicle.ownerId,
+    renterBookings: vehicle.bookings.map((booking) => ({
+      renterId: booking.renterId,
+      status: booking.status,
+    })),
+  });
 
   return (
     <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-start lg:px-8">
@@ -94,13 +114,30 @@ export default async function CarDetailPage({
               <Spec label={labels.category} value={getCategoryLabel(locale, vehicle.category)} />
               <Spec label={labels.transmission} value={getTransmissionLabel(locale, vehicle.transmission)} />
               <Spec label={labels.fuelType} value={getFuelTypeLabel(locale, vehicle.fuelType)} />
-              <Spec label={labels.pickupArea} value={approximateArea(vehicle.city, vehicle.address)} />
-              <Spec label={labels.plate} value={maskPlateNumber(vehicle.plateNumber)} muted locked />
+              <Spec
+                label={canRevealSensitiveDetails ? labels.pickupLocation : labels.pickupArea}
+                value={canRevealSensitiveDetails ? vehicle.address : approximateArea(vehicle.city, vehicle.address)}
+              />
+              <Spec
+                label={labels.plate}
+                value={canRevealSensitiveDetails ? vehicle.plateNumber : maskPlateNumber(vehicle.plateNumber)}
+                muted={!canRevealSensitiveDetails}
+                locked={!canRevealSensitiveDetails}
+              />
             </div>
-            <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
-              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              {labels.exactLocationAfterApproval}
-            </p>
+            {canRevealSensitiveDetails ? (
+              vehicle.pickupInstructions ? (
+                <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+                  <p className="font-semibold">{labels.pickupInstructionsLabel}</p>
+                  <p className="mt-2 leading-6">{vehicle.pickupInstructions}</p>
+                </div>
+              ) : null
+            ) : (
+              <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                {labels.exactLocationAfterApproval}
+              </p>
+            )}
 
             <div className="mt-6 border-t border-slate-200 pt-5 dark:border-slate-800">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{labels.insurance}</p>

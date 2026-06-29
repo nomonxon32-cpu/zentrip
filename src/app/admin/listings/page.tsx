@@ -69,6 +69,30 @@ export default async function AdminListingsPage() {
             </div>
             <div className="space-y-4">
               <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+                      {labels.pickupLocation}
+                    </p>
+                    <p className="mt-2 font-semibold text-slate-950 dark:text-slate-50">{listing.address}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+                      {labels.plate}
+                    </p>
+                    <p className="mt-2 font-semibold text-slate-950 dark:text-slate-50">{listing.plateNumber}</p>
+                  </div>
+                </div>
+                {listing.pickupInstructions ? (
+                  <div className="mt-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+                      {labels.pickupInstructionsLabel}
+                    </p>
+                    <p className="mt-2 leading-6">{listing.pickupInstructions}</p>
+                  </div>
+                ) : null}
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-900 dark:text-slate-300">
                 <p className="font-semibold text-slate-950 dark:text-slate-50">{labels.rules}</p>
                 <p className="mt-2">{listing.rules}</p>
               </div>

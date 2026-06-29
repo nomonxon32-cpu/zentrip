@@ -96,6 +96,22 @@ export default async function OwnerBookingDetailPage({
               <Info label="City" value={booking.vehicle.city} />
               <Info label="Plate" value={booking.vehicle.plateNumber} />
             </div>
+            <div className="mt-4 grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2">
+              <Info label={labels.pickupLocation} value={booking.pickupLocation?.trim() || booking.vehicle.address} />
+              <Info label={labels.ownerContact} value={`${booking.owner.name} · ${booking.owner.phone}`} />
+            </div>
+            {booking.vehicle.pickupInstructions ? (
+              <div className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <p className="font-semibold text-slate-950 dark:text-slate-50">{labels.pickupInstructionsLabel}</p>
+                <p className="mt-2 leading-6">{booking.vehicle.pickupInstructions}</p>
+              </div>
+            ) : null}
+            {booking.pickupNotes ? (
+              <div className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <p className="font-semibold text-slate-950 dark:text-slate-50">{labels.handoverNotes}</p>
+                <p className="mt-2 leading-6">{booking.pickupNotes}</p>
+              </div>
+            ) : null}
           </div>
 
           <PriceBreakdown

@@ -288,6 +288,7 @@ export async function getVehicleDetail(id: string) {
       },
       bookings: {
         select: {
+          renterId: true,
           startDate: true,
           endDate: true,
           status: true,
