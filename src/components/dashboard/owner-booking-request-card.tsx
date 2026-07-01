@@ -7,6 +7,7 @@ import { CashPaymentBadge } from "@/components/cash-payment-badge";
 import { OwnerBookingActions } from "@/components/dashboard/owner-booking-actions";
 import { useLocale } from "@/components/providers";
 import { StatusBadge } from "@/components/status-badge";
+import { getBookingPayableTotal } from "@/lib/booking-finance";
 import { getStatusLabel } from "@/lib/i18n-dictionary";
 import type { OwnerBookingListRecord } from "@/lib/owner-bookings";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -21,6 +22,7 @@ export function OwnerBookingRequestCard({
   const { locale, labels } = useLocale();
   const cover = booking.vehicle.photos[0]?.url;
   const dateRange = `${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`;
+  const payableTotal = getBookingPayableTotal(booking);
   const paymentSettled =
     booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED;
 
@@ -49,7 +51,7 @@ export function OwnerBookingRequestCard({
           <div className="space-y-2 text-sm">
             <InfoRow label={labels.renter} value={booking.renter.name} />
             <InfoRow label={labels.dates} value={dateRange} />
-            <InfoRow label={labels.totalPayable} value={formatCurrency(booking.totalAmount)} />
+            <InfoRow label={labels.totalPayable} value={formatCurrency(payableTotal)} />
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -109,7 +111,7 @@ export function OwnerBookingRequestCard({
             <Info label={labels.fromDate} value={formatDate(booking.startDate)} />
             <Info label={labels.untilDate} value={formatDate(booking.endDate)} />
             <Info label={labels.daysLabel} value={`${booking.days} ${labels.daysLabel}`} />
-            <Info label={labels.totalPayable} value={formatCurrency(booking.totalAmount)} />
+            <Info label={labels.totalPayable} value={formatCurrency(payableTotal)} />
           </div>
 
           <div className="grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2 xl:grid-cols-4">

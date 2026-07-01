@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/empty-state";
 import { StatCard } from "@/components/stat-card";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
+import { getOwnerPayoutAmount } from "@/lib/booking-finance";
 import { db } from "@/lib/db";
 import { getCurrentLocale, getDictionary, getStatusLabel } from "@/lib/i18n";
 import { getOwnerBookings } from "@/lib/owner-bookings";
@@ -64,7 +65,7 @@ export default async function OwnerDashboardPage() {
         booking.endDate >= monthStart &&
         booking.endDate < nextMonthStart,
     )
-    .reduce((sum, booking) => sum + booking.rentalAmount - booking.serviceFee, 0);
+    .reduce((sum, booking) => sum + getOwnerPayoutAmount(booking), 0);
   const averageRating =
     reviews.length > 0 ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1) : labels.newLabel;
   const title = locale === "uz" ? "Avtoparkingizni boshqaring" : locale === "ru" ? "Управляйте автопарком" : "Manage your fleet";

@@ -4,6 +4,7 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { EmptyState } from "@/components/empty-state";
 import { StatCard } from "@/components/stat-card";
 import { requireRole } from "@/lib/auth";
+import { getBookingPayableTotal } from "@/lib/booking-finance";
 import { db } from "@/lib/db";
 import { getCurrentLocale } from "@/lib/i18n";
 
@@ -50,7 +51,7 @@ export default async function AdminAnalyticsPage() {
   const activeBookings = bookings.filter((booking) => activeBookingStatuses.includes(booking.status)).length;
   const completedBookings = bookings.filter((booking) => booking.status === BookingStatus.COMPLETED).length;
   const liveListings = vehicles.filter((vehicle) => vehicle.status === VehicleStatus.ACTIVE).length;
-  const grossVolume = bookings.reduce((sum, booking) => sum + booking.totalAmount, 0);
+  const grossVolume = bookings.reduce((sum, booking) => sum + getBookingPayableTotal(booking), 0);
 
   const cities = Object.entries(
     vehicles.reduce<Record<string, number>>((summary, vehicle) => {

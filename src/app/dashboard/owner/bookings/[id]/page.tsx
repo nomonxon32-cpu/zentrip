@@ -10,6 +10,7 @@ import { MessageForm } from "@/components/forms/message-form";
 import { OwnerBookingActions } from "@/components/dashboard/owner-booking-actions";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
+import { getBookingPayableTotal } from "@/lib/booking-finance";
 import { getCurrentLocale, getDictionary } from "@/lib/i18n";
 import { getOwnerBookingById } from "@/lib/owner-bookings";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -32,6 +33,7 @@ export default async function OwnerBookingDetailPage({
 
   const driverLicense = booking.renter.kycDocuments[0] ?? null;
   const vehicleCover = booking.vehicle.photos[0]?.url;
+  const payableTotal = getBookingPayableTotal(booking);
   const paymentSettled =
     booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED;
 
@@ -61,7 +63,7 @@ export default async function OwnerBookingDetailPage({
             <Info label="Renter" value={booking.renter.name} />
             <Info label="Dates" value={`${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`} />
             <Info label="Days" value={`${booking.days} days`} />
-            <Info label="Total payable" value={formatCurrency(booking.totalAmount)} />
+            <Info label="Total payable" value={formatCurrency(payableTotal)} />
           </div>
           {booking.cancellationReason ? (
             <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-300">
@@ -211,7 +213,7 @@ export default async function OwnerBookingDetailPage({
             <CashPaymentBadge settled={paymentSettled} />
           </div>
           <p className="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
-            {labels.totalPayable}: {formatCurrency(booking.totalAmount)}
+            {labels.totalPayable}: {formatCurrency(payableTotal)}
           </p>
         </div>
 

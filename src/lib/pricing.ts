@@ -1,7 +1,12 @@
 import { BookingStatus } from "@prisma/client";
 import { differenceInCalendarDays } from "date-fns";
 
-import { MAX_RENTAL_DAYS, MONTHLY_DISCOUNT_RATE, SERVICE_FEE_RATE } from "@/lib/constants";
+import {
+  calculatePlatformServiceFee,
+  getBookingPayableTotal,
+  getOwnerPayoutAmount,
+} from "@/lib/booking-finance";
+import { MAX_RENTAL_DAYS, MONTHLY_DISCOUNT_RATE } from "@/lib/constants";
 
 export type BookingPrice = {
   days: number;
@@ -29,10 +34,19 @@ export function calculateBookingPrice(params: {
 }) {
   const days = getRentalDays(params.startDate, params.endDate);
   const rentalAmount = days * params.dailyPrice;
-  const serviceFee = Math.round(rentalAmount * SERVICE_FEE_RATE);
+  const serviceFee = calculatePlatformServiceFee(rentalAmount);
   const deliveryFee = params.deliveryFee ?? 0;
-  const totalAmount = rentalAmount + serviceFee + params.depositAmount + deliveryFee;
-  const payoutAmount = rentalAmount + deliveryFee - serviceFee;
+  const totalAmount = getBookingPayableTotal({
+    rentalAmount,
+    serviceFee,
+    depositAmount: params.depositAmount,
+    deliveryFee,
+  });
+  const payoutAmount = getOwnerPayoutAmount({
+    rentalAmount,
+    serviceFee,
+    deliveryFee,
+  });
 
   return {
     days,
@@ -64,10 +78,19 @@ export function calculateMonthlyBookingPrice(params: {
 }) {
   const effectiveMonthlyPrice = getVehicleMonthlyPrice(params.dailyPrice, params.monthlyPrice);
   const rentalAmount = effectiveMonthlyPrice * params.durationMonths;
-  const serviceFee = Math.round(rentalAmount * SERVICE_FEE_RATE);
+  const serviceFee = calculatePlatformServiceFee(rentalAmount);
   const deliveryFee = params.deliveryFee ?? 0;
-  const totalAmount = rentalAmount + serviceFee + params.depositAmount + deliveryFee;
-  const payoutAmount = rentalAmount + deliveryFee - serviceFee;
+  const totalAmount = getBookingPayableTotal({
+    rentalAmount,
+    serviceFee,
+    depositAmount: params.depositAmount,
+    deliveryFee,
+  });
+  const payoutAmount = getOwnerPayoutAmount({
+    rentalAmount,
+    serviceFee,
+    deliveryFee,
+  });
 
   return {
     days: getRentalDays(params.startDate, new Date(params.startDate.getFullYear(), params.startDate.getMonth() + params.durationMonths, params.startDate.getDate())),

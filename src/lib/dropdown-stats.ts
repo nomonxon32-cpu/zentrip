@@ -7,6 +7,7 @@ import {
   VehicleStatus,
 } from "@prisma/client";
 
+import { getBookingPayableTotal, getOwnerPayoutAmount } from "@/lib/booking-finance";
 import { db } from "@/lib/db";
 
 export type DropdownStats =
@@ -54,7 +55,10 @@ export async function getUserDropdownStats(user: {
           ],
         },
         _sum: {
-          totalAmount: true,
+          rentalAmount: true,
+          depositAmount: true,
+          deliveryFee: true,
+          serviceFee: true,
         },
       }),
       db.booking.count({
@@ -81,7 +85,12 @@ export async function getUserDropdownStats(user: {
     return {
       role: Role.RENTER,
       kycStatus: user.kycStatus,
-      totalSpent: spentAggregate._sum.totalAmount ?? 0,
+      totalSpent: getBookingPayableTotal({
+        rentalAmount: spentAggregate._sum.rentalAmount ?? 0,
+        depositAmount: spentAggregate._sum.depositAmount ?? 0,
+        deliveryFee: spentAggregate._sum.deliveryFee ?? 0,
+        serviceFee: spentAggregate._sum.serviceFee ?? 0,
+      }),
       upcomingTrips,
       completedTrips,
       savedCars,
@@ -97,6 +106,7 @@ export async function getUserDropdownStats(user: {
         },
         _sum: {
           rentalAmount: true,
+          deliveryFee: true,
           serviceFee: true,
         },
       }),
@@ -123,7 +133,11 @@ export async function getUserDropdownStats(user: {
     return {
       role: Role.OWNER,
       kycStatus: user.kycStatus,
-      totalEarned: (earnedAggregate._sum.rentalAmount ?? 0) - (earnedAggregate._sum.serviceFee ?? 0),
+      totalEarned: getOwnerPayoutAmount({
+        rentalAmount: earnedAggregate._sum.rentalAmount ?? 0,
+        deliveryFee: earnedAggregate._sum.deliveryFee ?? 0,
+        serviceFee: earnedAggregate._sum.serviceFee ?? 0,
+      }),
       pendingBookingRequests,
       activeListings,
       completedTrips,

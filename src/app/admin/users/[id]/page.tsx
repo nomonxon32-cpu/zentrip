@@ -5,8 +5,10 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { BackButton } from "@/components/back-button";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
+import { getBookingPayableTotal } from "@/lib/booking-finance";
 import { db } from "@/lib/db";
 import { getCurrentLocale, getDictionary } from "@/lib/i18n";
+import { formatCurrency } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -113,17 +115,21 @@ export default async function AdminUserDetailPage({
             <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">Renter bookings</h2>
             <div className="mt-4 space-y-3">
               {user.bookingsAsRenter.length ? (
-                user.bookingsAsRenter.map((booking) => (
-                  <div key={booking.id} className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center dark:border-slate-700">
-                    <div>
-                      <p className="font-semibold text-slate-950 dark:text-slate-50">
-                        {booking.vehicle.make} {booking.vehicle.model}
-                      </p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">{booking.totalAmount.toLocaleString("en-US")} UZS</p>
+                user.bookingsAsRenter.map((booking) => {
+                  const payableTotal = getBookingPayableTotal(booking);
+
+                  return (
+                    <div key={booking.id} className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center dark:border-slate-700">
+                      <div>
+                        <p className="font-semibold text-slate-950 dark:text-slate-50">
+                          {booking.vehicle.make} {booking.vehicle.model}
+                        </p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">{formatCurrency(payableTotal)}</p>
+                      </div>
+                      <StatusBadge value={booking.status} />
                     </div>
-                    <StatusBadge value={booking.status} />
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <p className="text-sm text-slate-500 dark:text-slate-400">No renter bookings.</p>
               )}

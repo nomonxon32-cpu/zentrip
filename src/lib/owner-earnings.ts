@@ -1,6 +1,6 @@
 import { BookingStatus, PaymentStatus, PaymentType, Prisma } from "@prisma/client";
 
-import { SERVICE_FEE_RATE } from "@/lib/constants";
+import { getOwnerPayoutAmount } from "@/lib/booking-finance";
 import { db } from "@/lib/db";
 
 const ownerVehicleInclude = {
@@ -125,10 +125,7 @@ function summarizeVehicle(vehicle: OwnerVehicleRecord) {
 function getOwnerNet(booking: {
   rentalAmount: number;
   serviceFee: number;
+  deliveryFee?: number | null;
 }) {
-  if (booking.serviceFee > 0) {
-    return booking.rentalAmount - booking.serviceFee;
-  }
-
-  return Math.round(booking.rentalAmount * (1 - SERVICE_FEE_RATE));
+  return getOwnerPayoutAmount(booking);
 }

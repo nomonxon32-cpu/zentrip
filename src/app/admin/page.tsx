@@ -5,6 +5,7 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { StatCard } from "@/components/stat-card";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
+import { getBookingPayableTotal } from "@/lib/booking-finance";
 import { db } from "@/lib/db";
 import { getCurrentLocale, getDictionary } from "@/lib/i18n";
 import { formatCurrency } from "@/lib/utils";
@@ -128,15 +129,19 @@ export default async function AdminOverviewPage() {
           <div className="surface-card rounded-[2rem] p-5 dark:bg-slate-900 sm:p-6">
             <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.recentBookingStatuses}</h2>
             <div className="mt-5 space-y-4">
-              {bookings.slice(0, 4).map((booking) => (
-                <div key={booking.id} className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center dark:border-slate-800">
-                  <div>
-                    <p className="font-semibold text-slate-950 dark:text-slate-50">{booking.id.slice(-8)}</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">{formatCurrency(booking.totalAmount)}</p>
+              {bookings.slice(0, 4).map((booking) => {
+                const payableTotal = getBookingPayableTotal(booking);
+
+                return (
+                  <div key={booking.id} className="flex flex-col items-start justify-between gap-3 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center dark:border-slate-800">
+                    <div>
+                      <p className="font-semibold text-slate-950 dark:text-slate-50">{booking.id.slice(-8)}</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">{formatCurrency(payableTotal)}</p>
+                    </div>
+                    <StatusBadge value={booking.status} />
                   </div>
-                  <StatusBadge value={booking.status} />
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

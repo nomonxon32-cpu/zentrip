@@ -3,7 +3,7 @@ import { BookingStatus } from "@prisma/client";
 import { calculateBookingPrice, getBookingStatusLabel, validateRentalPeriod } from "@/lib/pricing";
 
 describe("calculateBookingPrice", () => {
-  it("calculates rental, fee, and total", () => {
+  it("calculates rental, nominal fee, and waived-fee total", () => {
     const price = calculateBookingPrice({
       startDate: new Date("2026-05-20"),
       endDate: new Date("2026-05-23"),
@@ -14,7 +14,7 @@ describe("calculateBookingPrice", () => {
     expect(price.days).toBe(3);
     expect(price.rentalAmount).toBe(1200000);
     expect(price.serviceFee).toBe(144000);
-    expect(price.totalAmount).toBe(2344000);
+    expect(price.totalAmount).toBe(2200000);
   });
 });
 

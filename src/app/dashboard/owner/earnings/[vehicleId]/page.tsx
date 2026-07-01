@@ -1,5 +1,6 @@
 import { BookingStatus, Role } from "@prisma/client";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 
 import { BackButton } from "@/components/back-button";
 import { CashPaymentBadge } from "@/components/cash-payment-badge";
@@ -8,6 +9,7 @@ import { EmptyState } from "@/components/empty-state";
 import { StatCard } from "@/components/stat-card";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
+import { getWaivedPlatformFee } from "@/lib/booking-finance";
 import { getCurrentLocale, getDictionary, getStatusLabel } from "@/lib/i18n";
 import { getOwnerVehicleEarningsHistory } from "@/lib/owner-earnings";
 import { getOwnerDashboardLinks } from "@/lib/owner-navigation";
@@ -102,7 +104,19 @@ export default async function OwnerVehicleEarningsPage({
                 <Info label={labels.untilDate} value={formatDate(booking.endDate)} />
                 <Info label={labels.daysLabel} value={String(booking.days)} />
                 <Info label={locale === "uz" ? "Ijara summasi" : locale === "ru" ? "Сумма аренды" : "Rental amount"} value={formatCurrency(booking.rentalAmount)} />
-                <Info label={labels.platformServiceFee} value={formatCurrency(booking.serviceFee)} />
+                <Info
+                  label={labels.platformServiceFee}
+                  value={
+                    <div className="space-y-1">
+                      <p className="font-semibold text-slate-400 line-through decoration-slate-400/90 dark:text-slate-500 dark:decoration-slate-500/90">
+                        {formatCurrency(getWaivedPlatformFee(booking.serviceFee))}
+                      </p>
+                      <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                        {labels.waivedForLaunch}
+                      </p>
+                    </div>
+                  }
+                />
                 <Info label={locale === "uz" ? "Ega daromadi" : locale === "ru" ? "Доход владельца" : "Owner net"} value={formatCurrency(booking.ownerNet)} />
                 <Info label={locale === "uz" ? "Depozit holati" : locale === "ru" ? "Статус депозита" : "Deposit status"} value={getStatusLabel(locale, booking.depositStatus)} />
                 <Info label={labels.paymentMethodLabel} value={labels.cashPayment} />
@@ -126,11 +140,11 @@ export default async function OwnerVehicleEarningsPage({
   );
 }
 
-function Info({ label, value }: { label: string; value: string }) {
+function Info({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-900">
       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{label}</p>
-      <p className="mt-2 break-words font-semibold text-slate-950 dark:text-slate-50">{value}</p>
+      <div className="mt-2 break-words font-semibold text-slate-950 dark:text-slate-50">{value}</div>
     </div>
   );
 }
