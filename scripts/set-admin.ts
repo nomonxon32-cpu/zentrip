@@ -78,6 +78,7 @@ async function main() {
         role: Role.ADMIN,
         city: PRIMARY_ADMIN_CITY,
         kycStatus: KycStatus.APPROVED,
+        isSuspended: false,
       },
     });
 
@@ -105,7 +106,7 @@ async function main() {
 
 main()
   .catch((error) => {
-    console.error("Failed to sync the primary admin account.");
+    console.error("Failed to set the primary admin account.");
     console.error(error);
     process.exit(1);
   })
