@@ -3,6 +3,8 @@ import type { Locale } from "@/lib/i18n-dictionary";
 export function getAccountSettingsCopy(locale: Locale) {
   if (locale === "uz") {
     return {
+      overviewDescription: "Hisob ma'lumotlarini ko'ring va kerak bo'lganda tahrirlash oynasini oching.",
+      editProfile: "Profilni tahrirlash",
       profileTitle: "Profil ma'lumotlari",
       profileDescription: "Ism, telefon raqami va shaharni yangilang.",
       emailTitle: "Email manzili",
@@ -36,6 +38,8 @@ export function getAccountSettingsCopy(locale: Locale) {
 
   if (locale === "ru") {
     return {
+      overviewDescription: "Просматривайте данные аккаунта и открывайте редактирование только когда это нужно.",
+      editProfile: "Редактировать профиль",
       profileTitle: "Данные профиля",
       profileDescription: "Обновите имя, номер телефона и город.",
       emailTitle: "Email",
@@ -68,6 +72,8 @@ export function getAccountSettingsCopy(locale: Locale) {
   }
 
   return {
+    overviewDescription: "Review your account details and open an edit action only when you need to make a change.",
+    editProfile: "Edit profile",
     profileTitle: "Profile details",
     profileDescription: "Update your name, phone number, and city.",
     emailTitle: "Email address",

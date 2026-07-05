@@ -36,6 +36,8 @@ type SettingsUser = {
   isSuspended: boolean;
 };
 
+type ActivePanel = "profile" | "email" | "password" | null;
+
 export function AccountSettingsSection({ user }: { user: SettingsUser }) {
   const router = useRouter();
   const { locale, labels } = useLocale();
@@ -44,6 +46,7 @@ export function AccountSettingsSection({ user }: { user: SettingsUser }) {
   const [isSavingEmail, setIsSavingEmail] = useState(false);
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [showNameResetConfirm, setShowNameResetConfirm] = useState(false);
+  const [activePanel, setActivePanel] = useState<ActivePanel>(null);
 
   const profileForm = useForm<ProfileValues>({
     resolver: zodResolver(profileSettingsSchema),
@@ -86,6 +89,28 @@ export function AccountSettingsSection({ user }: { user: SettingsUser }) {
     }
   }, [hasNameChanged]);
 
+  function openPanel(panel: Exclude<ActivePanel, null>) {
+    setShowNameResetConfirm(false);
+    setActivePanel((current) => (current === panel ? null : panel));
+  }
+
+  function closePanel() {
+    setShowNameResetConfirm(false);
+    setActivePanel(null);
+    profileForm.reset({
+      name: user.name,
+      phone: user.phone,
+      city: user.city,
+      confirmNameReset: false,
+    });
+    emailForm.reset({ email: user.email });
+    passwordForm.reset({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+  }
+
   async function saveProfile(values: ProfileValues, confirmNameReset: boolean) {
     try {
       setIsSavingProfile(true);
@@ -116,7 +141,7 @@ export function AccountSettingsSection({ user }: { user: SettingsUser }) {
         city: values.city.trim(),
         confirmNameReset: false,
       });
-      setShowNameResetConfirm(false);
+      closePanel();
       router.refresh();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : labels.actionFailed);
@@ -128,189 +153,253 @@ export function AccountSettingsSection({ user }: { user: SettingsUser }) {
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1.12fr)_minmax(280px,0.88fr)]">
       <div className="space-y-6">
-        <form
-          onSubmit={profileForm.handleSubmit(async (values) => {
-            if (hasNameChanged && !showNameResetConfirm) {
-              setShowNameResetConfirm(true);
-              return;
-            }
-
-            await saveProfile(values, hasNameChanged);
-          })}
-          className="surface-card rounded-[2rem] p-6 dark:bg-slate-900"
-        >
+        <section className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
           <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{copy.profileTitle}</h2>
-            <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">{copy.profileDescription}</p>
+            <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.account}</h2>
+            <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">{copy.overviewDescription}</p>
           </div>
 
-          <div className="mt-5 grid gap-5 md:grid-cols-2">
-            <SettingsField label={labels.fullName} error={profileForm.formState.errors.name?.message}>
-              <input {...profileForm.register("name")} className="input" />
-              {isNameResetEligible ? (
-                <p className="mt-2 text-xs leading-5 text-amber-700 dark:text-amber-300">{copy.nameResetNote}</p>
-              ) : null}
-            </SettingsField>
-
-            <SettingsField label={labels.phone} error={profileForm.formState.errors.phone?.message}>
-              <input {...profileForm.register("phone")} className="input" />
-            </SettingsField>
-
-            <SettingsField label={labels.city} error={profileForm.formState.errors.city?.message}>
-              <select {...profileForm.register("city")} className="input">
-                {cityOptions.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </SettingsField>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <Info label={labels.fullName} value={user.name} />
+            <Info label={labels.email} value={user.email} />
+            <Info label={labels.phone} value={user.phone} />
+            <Info label={labels.city} value={user.city} />
+            <Info label={labels.roleLabel} value={getRoleLabel(locale, user.role)} />
+            <StatusInfo label={labels.kycStatus} value={<StatusBadge value={user.kycStatus} />} />
           </div>
 
-          {showNameResetConfirm && hasNameChanged ? (
-            <div className="mt-5 rounded-[1.5rem] border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/50">
-              <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">{copy.nameResetWarning}</p>
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  disabled={isSavingProfile}
-                  onClick={() => {
-                    void profileForm.handleSubmit(async (values) => saveProfile(values, true))();
-                  }}
-                  className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
-                >
-                  {isSavingProfile ? labels.working : copy.updateNameAndResetKyc}
-                </button>
-                <button
-                  type="button"
-                  disabled={isSavingProfile}
-                  onClick={() => {
-                    setShowNameResetConfirm(false);
-                    profileForm.resetField("name", { defaultValue: user.name });
-                  }}
-                  className="btn-secondary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
-                >
-                  {copy.cancelNameReset}
-                </button>
-              </div>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <button
+              type="button"
+              onClick={() => openPanel("profile")}
+              className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+            >
+              {copy.editProfile}
+            </button>
+            <button
+              type="button"
+              onClick={() => openPanel("email")}
+              className="btn-secondary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+            >
+              {copy.updateEmail}
+            </button>
+            <button
+              type="button"
+              onClick={() => openPanel("password")}
+              className="btn-secondary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+            >
+              {copy.changePassword}
+            </button>
+          </div>
+        </section>
+
+        {activePanel === "profile" ? (
+          <form
+            onSubmit={profileForm.handleSubmit(async (values) => {
+              if (hasNameChanged && !showNameResetConfirm) {
+                setShowNameResetConfirm(true);
+                return;
+              }
+
+              await saveProfile(values, hasNameChanged);
+            })}
+            className="surface-card rounded-[2rem] p-6 dark:bg-slate-900"
+          >
+            <div className="flex flex-col gap-2">
+              <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{copy.profileTitle}</h2>
+              <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">{copy.profileDescription}</p>
             </div>
-          ) : null}
 
-          <div className="mt-6">
-            <button
-              type="submit"
-              disabled={isSavingProfile}
-              className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
-            >
-              {isSavingProfile ? labels.working : copy.saveProfile}
-            </button>
-          </div>
-        </form>
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
+              <SettingsField label={labels.fullName} error={profileForm.formState.errors.name?.message}>
+                <input {...profileForm.register("name")} className="input" />
+                {isNameResetEligible ? (
+                  <p className="mt-2 text-xs leading-5 text-amber-700 dark:text-amber-300">{copy.nameResetNote}</p>
+                ) : null}
+              </SettingsField>
 
-        <form
-          onSubmit={emailForm.handleSubmit(async (values) => {
-            try {
-              setIsSavingEmail(true);
-              const response = await fetch("/api/account/email", {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
-              });
-              const payload = (await response.json().catch(() => ({}))) as ApiResponse;
+              <SettingsField label={labels.phone} error={profileForm.formState.errors.phone?.message}>
+                <input {...profileForm.register("phone")} className="input" />
+              </SettingsField>
 
-              if (!response.ok) {
-                throw new Error(payload.error ?? labels.actionFailed);
+              <SettingsField label={labels.city} error={profileForm.formState.errors.city?.message}>
+                <select {...profileForm.register("city")} className="input">
+                  {cityOptions.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
+              </SettingsField>
+            </div>
+
+            {showNameResetConfirm && hasNameChanged ? (
+              <div className="mt-5 rounded-[1.5rem] border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/50">
+                <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">{copy.nameResetWarning}</p>
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    disabled={isSavingProfile}
+                    onClick={() => {
+                      void profileForm.handleSubmit(async (values) => saveProfile(values, true))();
+                    }}
+                    className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+                  >
+                    {isSavingProfile ? labels.working : copy.updateNameAndResetKyc}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isSavingProfile}
+                    onClick={() => {
+                      setShowNameResetConfirm(false);
+                      profileForm.resetField("name", { defaultValue: user.name });
+                    }}
+                    className="btn-secondary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+                  >
+                    {copy.cancelNameReset}
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="submit"
+                disabled={isSavingProfile}
+                className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+              >
+                {isSavingProfile ? labels.working : copy.saveProfile}
+              </button>
+              <button
+                type="button"
+                onClick={closePanel}
+                className="btn-secondary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+              >
+                {labels.cancel}
+              </button>
+            </div>
+          </form>
+        ) : null}
+
+        {activePanel === "email" ? (
+          <form
+            onSubmit={emailForm.handleSubmit(async (values) => {
+              try {
+                setIsSavingEmail(true);
+                const response = await fetch("/api/account/email", {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(values),
+                });
+                const payload = (await response.json().catch(() => ({}))) as ApiResponse;
+
+                if (!response.ok) {
+                  throw new Error(payload.error ?? labels.actionFailed);
+                }
+
+                toast.success(payload.message ?? copy.emailUpdated);
+                emailForm.reset({ email: values.email.trim().toLowerCase() });
+                closePanel();
+                router.refresh();
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : labels.actionFailed);
+              } finally {
+                setIsSavingEmail(false);
               }
+            })}
+            className="surface-card rounded-[2rem] p-6 dark:bg-slate-900"
+          >
+            <div className="flex flex-col gap-2">
+              <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{copy.emailTitle}</h2>
+              <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">{copy.emailDescription}</p>
+            </div>
+            <div className="mt-5 max-w-xl">
+              <SettingsField label={labels.email} error={emailForm.formState.errors.email?.message}>
+                <input {...emailForm.register("email")} type="email" className="input" />
+              </SettingsField>
+            </div>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="submit"
+                disabled={isSavingEmail}
+                className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+              >
+                {isSavingEmail ? labels.working : copy.updateEmail}
+              </button>
+              <button
+                type="button"
+                onClick={closePanel}
+                className="btn-secondary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+              >
+                {labels.cancel}
+              </button>
+            </div>
+          </form>
+        ) : null}
 
-              toast.success(payload.message ?? copy.emailUpdated);
-              emailForm.reset({ email: values.email.trim().toLowerCase() });
-              router.refresh();
-            } catch (error) {
-              toast.error(error instanceof Error ? error.message : labels.actionFailed);
-            } finally {
-              setIsSavingEmail(false);
-            }
-          })}
-          className="surface-card rounded-[2rem] p-6 dark:bg-slate-900"
-        >
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{copy.emailTitle}</h2>
-            <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">{copy.emailDescription}</p>
-          </div>
-          <div className="mt-5 max-w-xl">
-            <SettingsField label={labels.email} error={emailForm.formState.errors.email?.message}>
-              <input {...emailForm.register("email")} type="email" className="input" />
-            </SettingsField>
-          </div>
-          <div className="mt-6">
-            <button
-              type="submit"
-              disabled={isSavingEmail}
-              className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
-            >
-              {isSavingEmail ? labels.working : copy.updateEmail}
-            </button>
-          </div>
-        </form>
+        {activePanel === "password" ? (
+          <form
+            onSubmit={passwordForm.handleSubmit(async (values) => {
+              try {
+                setIsSavingPassword(true);
+                const response = await fetch("/api/account/password", {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(values),
+                });
+                const payload = (await response.json().catch(() => ({}))) as ApiResponse;
 
-        <form
-          onSubmit={passwordForm.handleSubmit(async (values) => {
-            try {
-              setIsSavingPassword(true);
-              const response = await fetch("/api/account/password", {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
-              });
-              const payload = (await response.json().catch(() => ({}))) as ApiResponse;
+                if (!response.ok) {
+                  throw new Error(payload.error ?? labels.actionFailed);
+                }
 
-              if (!response.ok) {
-                throw new Error(payload.error ?? labels.actionFailed);
+                toast.success(payload.message ?? copy.passwordUpdated);
+                closePanel();
+                router.refresh();
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : labels.actionFailed);
+              } finally {
+                setIsSavingPassword(false);
               }
+            })}
+            className="surface-card rounded-[2rem] p-6 dark:bg-slate-900"
+          >
+            <div className="flex flex-col gap-2">
+              <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{copy.securityTitle}</h2>
+              <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">{copy.securityDescription}</p>
+            </div>
 
-              toast.success(payload.message ?? copy.passwordUpdated);
-              passwordForm.reset({
-                currentPassword: "",
-                newPassword: "",
-                confirmPassword: "",
-              });
-              router.refresh();
-            } catch (error) {
-              toast.error(error instanceof Error ? error.message : labels.actionFailed);
-            } finally {
-              setIsSavingPassword(false);
-            }
-          })}
-          className="surface-card rounded-[2rem] p-6 dark:bg-slate-900"
-        >
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-black tracking-tight text-slate-950 dark:text-slate-50">{copy.securityTitle}</h2>
-            <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">{copy.securityDescription}</p>
-          </div>
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
+              <SettingsField label={copy.currentPassword} error={passwordForm.formState.errors.currentPassword?.message}>
+                <input {...passwordForm.register("currentPassword")} type="password" className="input" />
+              </SettingsField>
+              <div className="hidden md:block" />
+              <SettingsField label={copy.newPassword} error={passwordForm.formState.errors.newPassword?.message}>
+                <input {...passwordForm.register("newPassword")} type="password" className="input" />
+              </SettingsField>
+              <SettingsField label={copy.confirmPassword} error={passwordForm.formState.errors.confirmPassword?.message}>
+                <input {...passwordForm.register("confirmPassword")} type="password" className="input" />
+              </SettingsField>
+            </div>
 
-          <div className="mt-5 grid gap-5 md:grid-cols-2">
-            <SettingsField label={copy.currentPassword} error={passwordForm.formState.errors.currentPassword?.message}>
-              <input {...passwordForm.register("currentPassword")} type="password" className="input" />
-            </SettingsField>
-            <div className="hidden md:block" />
-            <SettingsField label={copy.newPassword} error={passwordForm.formState.errors.newPassword?.message}>
-              <input {...passwordForm.register("newPassword")} type="password" className="input" />
-            </SettingsField>
-            <SettingsField label={copy.confirmPassword} error={passwordForm.formState.errors.confirmPassword?.message}>
-              <input {...passwordForm.register("confirmPassword")} type="password" className="input" />
-            </SettingsField>
-          </div>
-
-          <div className="mt-6">
-            <button
-              type="submit"
-              disabled={isSavingPassword}
-              className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
-            >
-              {isSavingPassword ? labels.working : copy.changePassword}
-            </button>
-          </div>
-        </form>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <button
+                type="submit"
+                disabled={isSavingPassword}
+                className="btn-primary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+              >
+                {isSavingPassword ? labels.working : copy.changePassword}
+              </button>
+              <button
+                type="button"
+                onClick={closePanel}
+                className="btn-secondary w-full rounded-2xl px-5 py-3 font-semibold transition sm:w-auto"
+              >
+                {labels.cancel}
+              </button>
+            </div>
+          </form>
+        ) : null}
       </div>
 
       <div className="space-y-6">
@@ -351,6 +440,30 @@ function SettingsField({
       <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">{label}</label>
       {children}
       {error ? <p className="theme-error mt-2 text-sm">{error}</p> : null}
+    </div>
+  );
+}
+
+function Info({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-950">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{label}</p>
+      <p className="mt-2 break-words font-semibold text-slate-950 dark:text-slate-50">{value}</p>
+    </div>
+  );
+}
+
+function StatusInfo({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-950">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{label}</p>
+      <div className="mt-2">{value}</div>
     </div>
   );
 }
