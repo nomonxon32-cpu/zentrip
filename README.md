@@ -68,8 +68,8 @@ Notes:
 Admin:
 
 ```text
-email: admin@uzcar.uz
-password: Admin123!
+email: nomonxon32@gmail.com
+password: configured privately
 ```
 
 Owner:

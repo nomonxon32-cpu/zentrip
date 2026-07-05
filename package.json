@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "db:sync-admin": "tsx scripts/sync-admin-account.ts",
     "db:push": "tsx scripts/db-push.ts",
     "db:setup": "tsx scripts/db-setup.ts",
     "db:migrate": "prisma migrate deploy",

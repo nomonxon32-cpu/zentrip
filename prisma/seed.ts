@@ -18,6 +18,8 @@ import {
 import { addDays, subDays } from "date-fns";
 
 const prisma = new PrismaClient();
+const ADMIN_EMAIL = "nomonxon32@gmail.com";
+const ADMIN_PASSWORD = "7This$Is$My$Code$7Theo";
 
 async function main() {
   await prisma.emailVerificationToken.deleteMany();
@@ -36,7 +38,7 @@ async function main() {
 
   const [adminPassword, ownerPassword, owner2Password, renterPassword, renter2Password, renter3Password] =
     await Promise.all([
-      bcrypt.hash("Admin123!", 10),
+      bcrypt.hash(ADMIN_PASSWORD, 10),
       bcrypt.hash("Owner123!", 10),
       bcrypt.hash("Owner234!", 10),
       bcrypt.hash("Renter123!", 10),
@@ -47,7 +49,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       name: "Zentrip Admin",
-      email: "admin@uzcar.uz",
+      email: ADMIN_EMAIL,
       phone: "+998 90 000 00 01",
       emailVerifiedAt: new Date(),
       passwordHash: adminPassword,
@@ -812,7 +814,7 @@ async function main() {
   });
 
   console.log("Seed completed");
-  console.log("Admin:", admin.email, "Admin123!");
+  console.log("Admin:", admin.email);
   console.log("Owner:", ownerDemo.email, "Owner123!");
   console.log("Renter:", renterDemo.email, "Renter123!");
 }
