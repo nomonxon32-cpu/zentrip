@@ -136,8 +136,8 @@ async function main() {
       },
       {
         userId: ownerDemo.id,
-        documentType: DocumentType.DRIVER_LICENSE,
-        frontImageUrl: "/uploads/seed-license.svg",
+        documentType: DocumentType.VEHICLE_REGISTRATION,
+        frontImageUrl: "/uploads/seed-id-card.svg",
         status: KycStatus.APPROVED,
       },
       {
@@ -148,8 +148,8 @@ async function main() {
       },
       {
         userId: ownerTwo.id,
-        documentType: DocumentType.DRIVER_LICENSE,
-        frontImageUrl: "/uploads/seed-license.svg",
+        documentType: DocumentType.VEHICLE_REGISTRATION,
+        frontImageUrl: "/uploads/seed-id-card.svg",
         status: KycStatus.APPROVED,
       },
       {

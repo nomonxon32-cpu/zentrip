@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
 import { getBookingPayableTotal } from "@/lib/booking-finance";
 import { db } from "@/lib/db";
-import { getCurrentLocale, getDictionary } from "@/lib/i18n";
+import { getCurrentLocale, getDictionary, getDocumentTypeLabel } from "@/lib/i18n";
 import { formatCurrency } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -74,7 +74,9 @@ export default async function AdminUserDetailPage({
                 user.kycDocuments.map((document) => (
                   <div key={document.id} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
                     <div className="flex items-center justify-between gap-3">
-                      <p className="font-semibold text-slate-950 dark:text-slate-50">{document.documentType.replaceAll("_", " ")}</p>
+                      <p className="font-semibold text-slate-950 dark:text-slate-50">
+                        {getDocumentTypeLabel(locale, document.documentType, user.role)}
+                      </p>
                       <StatusBadge value={document.status} />
                     </div>
                     {document.rejectionReason ? (

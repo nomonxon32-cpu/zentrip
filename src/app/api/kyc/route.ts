@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { requireApiUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { handleApiError } from "@/lib/http";
+import { getKycStatusForRole, isKycDocumentTypeAllowedForRole } from "@/lib/kyc";
 import { createNotification } from "@/lib/notifications";
 import { kycUploadSchema } from "@/lib/validators";
 
@@ -17,6 +18,10 @@ export async function POST(request: Request) {
 
     const body = kycUploadSchema.parse(await request.json());
 
+    if (!isKycDocumentTypeAllowedForRole(user.role, body.documentType)) {
+      return NextResponse.json({ error: "This document type is not used for your verification flow." }, { status: 400 });
+    }
+
     await db.$transaction(async (tx) => {
       await tx.kycDocument.create({
         data: {
@@ -29,10 +34,18 @@ export async function POST(request: Request) {
         },
       });
 
+      const documents = await tx.kycDocument.findMany({
+        where: { userId: user.id },
+        select: {
+          documentType: true,
+          status: true,
+        },
+      });
+
       await tx.user.update({
         where: { id: user.id },
         data: {
-          kycStatus: KycStatus.PENDING,
+          kycStatus: getKycStatusForRole(user.role, documents),
         },
       });
     });

@@ -1231,16 +1231,18 @@ const paymentMethodLabels: Record<Locale, Record<PaymentMethod, string>> = {
   },
 };
 
-const documentTypeLabels: Record<Locale, Record<DocumentType, string>> = {
+const documentTypeLabels: Record<Locale, Record<string, string>> = {
   en: {
     PASSPORT: "Passport",
     ID_CARD: "ID card",
     DRIVER_LICENSE: "Driver license",
+    VEHICLE_REGISTRATION: "Vehicle registration document",
   },
   uz: {
     PASSPORT: "Pasport",
     ID_CARD: "ID karta",
     DRIVER_LICENSE: "Haydovchilik guvohnomasi",
+    VEHICLE_REGISTRATION: "Avtomobil ro'yxatdan o'tkazish hujjati",
   },
   ru: {
     PASSPORT: "Паспорт",
@@ -1312,8 +1314,25 @@ export function getPaymentMethodLabel(locale: Locale, value: PaymentMethod | str
   return paymentMethodLabels[locale][value as PaymentMethod] ?? String(value);
 }
 
-export function getDocumentTypeLabel(locale: Locale, value: DocumentType | string) {
-  return documentTypeLabels[locale][value as DocumentType] ?? String(value);
+export function getDocumentTypeLabel(locale: Locale, value: DocumentType | string, role?: Role) {
+  if (role === Role.OWNER && value === DocumentType.DRIVER_LICENSE) {
+    return locale === "uz"
+      ? "Avtomobil ro'yxatdan o'tkazish hujjati"
+      : locale === "ru"
+        ? "Документ о регистрации автомобиля"
+        : "Vehicle registration document";
+  }
+
+  if (value === DocumentType.VEHICLE_REGISTRATION) {
+    return documentTypeLabels[locale][value] ??
+      (locale === "uz"
+        ? "Avtomobil ro'yxatdan o'tkazish hujjati"
+        : locale === "ru"
+          ? "Документ о регистрации автомобиля"
+          : "Vehicle registration document");
+  }
+
+  return documentTypeLabels[locale][value] ?? String(value);
 }
 
 export function getFeatureLabel(

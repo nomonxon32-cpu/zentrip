@@ -1,9 +1,10 @@
-import { DocumentType, KycStatus, Role } from "@prisma/client";
+import { KycStatus, Role } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 import { requireApiRole } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { handleApiError } from "@/lib/http";
+import { getKycStatusForRole } from "@/lib/kyc";
 import { createNotification } from "@/lib/notifications";
 
 export async function PATCH(
@@ -36,33 +37,25 @@ export async function PATCH(
       },
     });
 
-    if (body.action === "REJECT") {
-      await db.user.update({
-        where: { id: document.userId },
-        data: { kycStatus: KycStatus.REJECTED },
-      });
-    } else {
-      const approvedDocs = await db.kycDocument.findMany({
-        where: { userId: document.userId, status: KycStatus.APPROVED },
-        select: { documentType: true },
-      });
-      const hasIdentityDoc = approvedDocs.some(
-        (doc) => doc.documentType === DocumentType.PASSPORT || doc.documentType === DocumentType.ID_CARD,
-      );
-      const hasLicense = approvedDocs.some((doc) => doc.documentType === DocumentType.DRIVER_LICENSE);
+    const documents = await db.kycDocument.findMany({
+      where: { userId: document.userId },
+      select: {
+        documentType: true,
+        status: true,
+      },
+    });
 
-      await db.user.update({
-        where: { id: document.userId },
-        data: {
-          kycStatus: hasIdentityDoc && hasLicense ? KycStatus.APPROVED : KycStatus.PENDING,
-        },
-      });
-    }
+    await db.user.update({
+      where: { id: document.userId },
+      data: {
+        kycStatus: getKycStatusForRole(document.user.role, documents),
+      },
+    });
 
     await createNotification({
       userId: document.userId,
       type: "KYC_STATUS",
-      title: body.action === "APPROVE" ? "KYC approved" : "KYC rejected",
+      title: body.action === "APPROVE" ? "Verification document approved" : "Verification document rejected",
       message:
         body.action === "APPROVE"
           ? "Your verification document was approved."

@@ -50,7 +50,7 @@ export default async function AdminKycPage() {
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">{labels.documentType}</p>
                   <p className="mt-2 text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">
-                    {getDocumentTypeLabel(locale, document.documentType)}
+                    {getDocumentTypeLabel(locale, document.documentType, document.user.role)}
                   </p>
                 </div>
                 <KycReviewActions documentId={document.id} />

@@ -25,6 +25,7 @@ enum DocumentType {
   PASSPORT
   ID_CARD
   DRIVER_LICENSE
+  VEHICLE_REGISTRATION
 }
 
 enum VehicleCategory {
