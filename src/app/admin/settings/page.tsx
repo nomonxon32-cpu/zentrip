@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Role } from "@prisma/client";
 
+import { AccountSettingsSection } from "@/components/account-settings-section";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { requireRole } from "@/lib/auth";
 import { getCurrentLocale } from "@/lib/i18n";
@@ -8,15 +9,14 @@ import { getCurrentLocale } from "@/lib/i18n";
 export const dynamic = "force-dynamic";
 
 export default async function AdminSettingsPage() {
-  await requireRole(Role.ADMIN);
-  const locale = await getCurrentLocale();
+  const [user, locale] = await Promise.all([requireRole(Role.ADMIN), getCurrentLocale()]);
   const title = locale === "uz" ? "Admin sozlamalari" : locale === "ru" ? "Настройки админа" : "Admin settings";
   const description =
     locale === "uz"
-      ? "Operatsion havolalar, moderatsiya oqimlari va platforma bo'yicha asosiy boshqaruv nuqtalari."
+      ? "Admin profilingizni yangilang va platformadagi tezkor boshqaruv havolalariga qayting."
       : locale === "ru"
-        ? "Операционные ссылки, очереди модерации и основные точки управления платформой."
-        : "Operational shortcuts, moderation queues, and the core control points for the marketplace.";
+        ? "Обновляйте профиль администратора и быстро переходите к ключевым разделам управления платформой."
+        : "Update your admin profile and keep the main moderation shortcuts within reach.";
 
   const cards = [
     {
@@ -63,6 +63,18 @@ export default async function AdminSettingsPage() {
 
   return (
     <AdminShell currentPath="/admin/settings" title={title} description={description}>
+      <AccountSettingsSection
+        user={{
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          city: user.city,
+          role: user.role,
+          kycStatus: user.kycStatus,
+          isSuspended: user.isSuspended,
+        }}
+      />
+
       <div className="grid gap-5 md:grid-cols-2">
         {cards.map((card) => (
           <Link

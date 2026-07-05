@@ -11,6 +11,12 @@ const imageUrlSchema = z
     message: "Invalid file URL.",
   });
 const optionalTimeSchema = z.union([z.literal(""), z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Enter a valid time in HH:mm format.")]);
+const passwordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters long.")
+  .regex(/[A-Z]/, "Include at least one uppercase letter.")
+  .regex(/[a-z]/, "Include at least one lowercase letter.")
+  .regex(/\d/, "Include at least one number.");
 
 export const registerSchema = z.object({
   role: z.union([z.literal(Role.OWNER), z.literal(Role.RENTER)]),
@@ -18,12 +24,7 @@ export const registerSchema = z.object({
   email: z.email(),
   phone: z.string().min(7).max(24),
   city: z.string().min(2).max(80),
-  password: z
-    .string()
-    .min(8)
-    .regex(/[A-Z]/, "Include at least one uppercase letter.")
-    .regex(/[a-z]/, "Include at least one lowercase letter.")
-    .regex(/\d/, "Include at least one number."),
+  password: passwordSchema,
 });
 
 export const loginSchema = z.object({
@@ -157,3 +158,25 @@ export const messageSchema = z.object({
   content: z.string().min(1).max(1000),
   attachmentUrl: imageUrlSchema.optional().nullable(),
 });
+
+export const profileSettingsSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  phone: z.string().trim().min(7).max(24),
+  city: z.string().trim().min(2).max(80),
+  confirmNameReset: z.boolean().optional(),
+});
+
+export const emailSettingsSchema = z.object({
+  email: z.string().trim().email(),
+});
+
+export const passwordChangeSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Enter your current password."),
+    newPassword: passwordSchema,
+    confirmPassword: z.string().min(1, "Confirm your new password."),
+  })
+  .refine((value) => value.newPassword === value.confirmPassword, {
+    message: "New password and confirmation must match.",
+    path: ["confirmPassword"],
+  });
