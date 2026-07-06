@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Instagram, Mail, Send } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { useLocale } from "@/components/providers";
@@ -16,7 +17,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-      <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 text-sm text-slate-600 dark:text-slate-400 sm:px-6 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-8">
+      <div className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 text-sm text-slate-600 dark:text-slate-400 sm:px-6 lg:grid-cols-[1.3fr_1fr_1fr_1fr] lg:px-8">
         <div className="space-y-3">
           <Link href="/" aria-label="Zentrip home" className="inline-flex">
             <BrandLogo iconClassName="h-7 w-7" wordmarkClassName="text-lg" />
@@ -49,6 +50,46 @@ export function Footer() {
             <span>Bukhara</span>
             <span>Fergana</span>
           </div>
+        </div>
+        <div className="space-y-4">
+          <p className="font-semibold text-slate-950 dark:text-slate-50">
+            {locale === "uz" ? "Aloqa va ijtimoiy tarmoqlar" : locale === "ru" ? "Контакты и соцсети" : "Contact & socials"}
+          </p>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://www.instagram.com/zentrip_uz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Zentrip Instagram"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+            >
+              <Instagram className="h-5 w-5" />
+            </a>
+            <a
+              href="https://t.me/zentrip_uz"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Zentrip Telegram"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+            >
+              <Send className="h-5 w-5" />
+            </a>
+            <a
+              href="mailto:zokirovnomonxon@icloud.com"
+              aria-label="Email Zentrip"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+            >
+              <Mail className="h-5 w-5" />
+            </a>
+          </div>
+          <a
+            href="mailto:zokirovnomonxon@icloud.com"
+            aria-label="Email Zentrip"
+            className="inline-flex items-center gap-2 break-all text-slate-600 transition hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-50"
+          >
+            <Mail className="h-4 w-4 shrink-0" />
+            <span>zokirovnomonxon@icloud.com</span>
+          </a>
         </div>
       </div>
     </footer>
