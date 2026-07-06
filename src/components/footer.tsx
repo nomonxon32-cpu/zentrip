@@ -26,7 +26,7 @@ export function Footer() {
             {locale === "uz"
               ? "O'zbekiston bo'ylab shaxsiy avtomobil ijara bozori - shaxsni tekshirish, egasi tasdig'i va himoyalangan bozor tajribasi bilan."
               : locale === "ru"
-                ? "Премиальный маркетплейс peer-to-peer аренды по Узбекистану с проверкой личности, одобрением владельцев и защитой на уровне платформы."
+                ? "Премиальный peer-to-peer маркетплейс аренды по Узбекистану с проверкой личности, одобрением владельцев и защитой на уровне платформы."
                 : "Premium peer-to-peer rentals across Uzbekistan with identity checks, owner approvals, and marketplace-style protection."}
           </p>
         </div>
@@ -61,7 +61,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Zentrip Instagram"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-transparent bg-[linear-gradient(135deg,#feda75_0%,#fa7e1e_28%,#d62976_58%,#962fbf_82%,#4f5bd5_100%)] text-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:brightness-110 dark:ring-white/10"
             >
               <Instagram className="h-5 w-5" />
             </a>
@@ -70,26 +70,18 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Zentrip Telegram"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-transparent bg-sky-500 text-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:bg-sky-400 dark:bg-sky-500 dark:ring-white/10 dark:hover:bg-sky-400"
             >
               <Send className="h-5 w-5" />
             </a>
             <a
               href="mailto:zokirovnomonxon@icloud.com"
               aria-label="Email Zentrip"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-200 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-50"
             >
               <Mail className="h-5 w-5" />
             </a>
           </div>
-          <a
-            href="mailto:zokirovnomonxon@icloud.com"
-            aria-label="Email Zentrip"
-            className="inline-flex items-center gap-2 break-all text-slate-600 transition hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-50"
-          >
-            <Mail className="h-4 w-4 shrink-0" />
-            <span>zokirovnomonxon@icloud.com</span>
-          </a>
         </div>
       </div>
     </footer>
