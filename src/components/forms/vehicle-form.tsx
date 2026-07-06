@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FuelType, Transmission, VehicleCategory } from "@prisma/client";
@@ -8,8 +9,10 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { useLocale } from "@/components/providers";
 import { UploadBox } from "@/components/upload-box";
 import { CITIES } from "@/lib/constants";
+import { getLegalUi } from "@/lib/legal";
 import { vehicleListingSchema } from "@/lib/validators";
 
 type VehicleValues = z.infer<typeof vehicleListingSchema>;
@@ -55,17 +58,22 @@ export function VehicleForm({
   initialValues?: Partial<VehicleValues>;
 }) {
   const router = useRouter();
+  const { locale } = useLocale();
+  const legal = getLegalUi(locale);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     control,
     handleSubmit,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<VehicleValues>({
     resolver: zodResolver(vehicleListingSchema),
     defaultValues: {
       ...defaultVehicleValues,
+      acceptedTerms: mode === "edit",
       ...initialValues,
     },
   });
@@ -82,6 +90,11 @@ export function VehicleForm({
     <form
       onSubmit={handleSubmit(async (values) => {
         try {
+          if (mode === "create" && values.acceptedTerms !== true) {
+            setError("acceptedTerms", { type: "manual", message: legal.listingAgreementError });
+            return;
+          }
+
           setIsSubmitting(true);
           const payload = {
             ...values,
@@ -315,6 +328,32 @@ export function VehicleForm({
           )}
         </div>
       </div>
+
+      {mode === "create" ? (
+        <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
+          <label className="flex items-start gap-3 rounded-2xl border border-slate-200 px-4 py-4 dark:border-slate-700">
+            <input
+              {...register("acceptedTerms")}
+              type="checkbox"
+              className="mt-1 h-4 w-4 rounded border-slate-300 dark:border-slate-600"
+              onChange={(event) => {
+                register("acceptedTerms").onChange(event);
+                if (event.target.checked) {
+                  clearErrors("acceptedTerms");
+                }
+              }}
+            />
+            <span className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+              {legal.listingAgreementLead}
+              <Link href="/terms-of-use" className="font-semibold text-sky-600 hover:underline dark:text-sky-400">
+                {legal.termsOfUse}
+              </Link>
+              {legal.listingAgreementSuffix}
+            </span>
+          </label>
+          {errors.acceptedTerms ? <p className="theme-error mt-2 text-sm">{legal.listingAgreementError}</p> : null}
+        </div>
+      ) : null}
 
       <button
         type="submit"

@@ -25,6 +25,7 @@ export const registerSchema = z.object({
   phone: z.string().min(7).max(24),
   city: z.string().min(2).max(80),
   password: passwordSchema,
+  acceptedLegal: z.boolean().refine((value) => value, "You must agree to the legal terms."),
 });
 
 export const loginSchema = z.object({
@@ -72,6 +73,7 @@ export const vehicleListingSchema = z.object({
   deliveryFee: z.number().int().min(0).optional().nullable(),
   photoUrls: z.array(imageUrlSchema).min(1, "Add at least one vehicle photo.").max(8),
   availabilityBlocks: z.array(availabilityBlockSchema),
+  acceptedTerms: z.boolean().optional(),
 })
   .refine((value) => !value.deliveryAvailable || value.deliveryFee == null || value.deliveryFee >= 0, {
     message: "Delivery fee must be zero or greater.",

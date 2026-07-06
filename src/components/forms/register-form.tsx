@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Role } from "@prisma/client";
@@ -10,6 +11,7 @@ import { z } from "zod";
 
 import { useLocale } from "@/components/providers";
 import { CITIES } from "@/lib/constants";
+import { getLegalUi } from "@/lib/legal";
 import { registerSchema } from "@/lib/validators";
 
 type RegisterValues = z.infer<typeof registerSchema>;
@@ -24,7 +26,8 @@ export function RegisterForm({
   defaultRole?: "OWNER" | "RENTER";
 }) {
   const router = useRouter();
-  const { labels } = useLocale();
+  const { locale, labels } = useLocale();
+  const legal = getLegalUi(locale);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
@@ -35,6 +38,7 @@ export function RegisterForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       role: defaultRole,
+      acceptedLegal: false,
     },
   });
 
@@ -104,6 +108,28 @@ export function RegisterForm({
       <FormField label={labels.password} error={errors.password?.message}>
         <input {...register("password")} type="password" className="input" />
       </FormField>
+
+      <div>
+        <label className="flex items-start gap-3 rounded-2xl border border-slate-200 px-4 py-4 dark:border-slate-700">
+          <input
+            {...register("acceptedLegal")}
+            type="checkbox"
+            className="mt-1 h-4 w-4 rounded border-slate-300 dark:border-slate-600"
+          />
+          <span className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+            {legal.registerAgreementLead}
+            <Link href="/terms-of-use" className="font-semibold text-sky-600 hover:underline dark:text-sky-400">
+              {legal.termsOfUse}
+            </Link>
+            {legal.and}
+            <Link href="/privacy-policy" className="font-semibold text-sky-600 hover:underline dark:text-sky-400">
+              {legal.privacyPolicy}
+            </Link>
+            {legal.agreeSuffix}
+          </span>
+        </label>
+        {errors.acceptedLegal ? <p className="theme-error mt-2 text-sm">{legal.registerAgreementError}</p> : null}
+      </div>
 
       <button
         type="submit"

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookingType, PaymentMethod } from "@prisma/client";
@@ -14,6 +15,7 @@ import { DateRangePicker } from "@/components/date-range-picker";
 import { PriceBreakdown } from "@/components/price-breakdown";
 import { useLocale } from "@/components/providers";
 import { monthlyDurationOptions } from "@/lib/constants";
+import { getLegalUi } from "@/lib/legal";
 import { calculateBookingPrice, calculateMonthlyBookingPrice, getVehicleMonthlyPrice } from "@/lib/pricing";
 import { bookingSchema } from "@/lib/validators";
 
@@ -56,6 +58,7 @@ export function CheckoutForm({
 }) {
   const router = useRouter();
   const { locale, labels } = useLocale();
+  const legal = getLegalUi(locale);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
@@ -372,6 +375,13 @@ export function CheckoutForm({
         >
           {isSubmitting ? labels.confirmingBooking : labels.confirmBooking}
         </button>
+        <p className="text-center text-xs leading-6 text-slate-500 dark:text-slate-400">
+          {legal.bookingAgreementLead}
+          <Link href="/terms-of-use" className="font-semibold text-sky-600 hover:underline dark:text-sky-400">
+            {legal.termsOfUse}
+          </Link>
+          {legal.bookingAgreementSuffix}
+        </p>
       </div>
     </form>
   );

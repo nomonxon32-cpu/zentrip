@@ -21,6 +21,13 @@ export async function POST(request: Request) {
 
     const body = vehicleListingSchema.parse(await request.json());
 
+    if (body.acceptedTerms !== true) {
+      return NextResponse.json(
+        { error: "You must confirm that you are authorized to list this vehicle and agree to the Terms of Use." },
+        { status: 400 },
+      );
+    }
+
     const listing = await db.vehicle.create({
       data: {
         ownerId: user.id,

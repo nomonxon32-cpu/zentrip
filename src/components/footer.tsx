@@ -6,10 +6,12 @@ import { Instagram, Mail, Send } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { useLocale } from "@/components/providers";
+import { getLegalUi } from "@/lib/legal";
 
 export function Footer() {
   const pathname = usePathname();
   const { locale, labels } = useLocale();
+  const legal = getLegalUi(locale);
 
   if (pathname.startsWith("/admin") || pathname.startsWith("/dashboard")) {
     return null;
@@ -38,6 +40,8 @@ export function Footer() {
             <Link href="/search">{labels.browseCars}</Link>
             <Link href="/host">{labels.becomeHost}</Link>
             <Link href="/trust">{labels.trust}</Link>
+            <Link href="/privacy-policy">{legal.privacyPolicy}</Link>
+            <Link href="/terms-of-use">{legal.termsOfUse}</Link>
           </div>
         </div>
         <div className="space-y-3">
