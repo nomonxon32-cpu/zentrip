@@ -11,6 +11,7 @@ import { z } from "zod";
 
 import { useLocale } from "@/components/providers";
 import { UploadBox } from "@/components/upload-box";
+import { isAvailabilityBlockExpired } from "@/lib/availability";
 import { CITIES } from "@/lib/constants";
 import { getLegalUi } from "@/lib/legal";
 import { vehicleListingSchema } from "@/lib/validators";
@@ -81,9 +82,23 @@ export function VehicleForm({
   const photoUrls = useWatch({ control, name: "photoUrls" }) ?? [];
   const deliveryAvailable = useWatch({ control, name: "deliveryAvailable" });
   const monthlyAvailable = useWatch({ control, name: "monthlyAvailable" });
+  const availabilityBlocks = useWatch({ control, name: "availabilityBlocks" }) ?? [];
   const { fields, append, remove } = useFieldArray({
     control,
     name: "availabilityBlocks",
+  });
+  const availabilityEntries = fields.map((field, index) => ({
+    field,
+    index,
+    value: availabilityBlocks[index],
+  }));
+  const currentAndFutureEntries = availabilityEntries.filter((entry) => {
+    const endDate = entry.value?.endDate;
+    return !endDate || !isAvailabilityBlockExpired({ endDate });
+  });
+  const pastEntries = availabilityEntries.filter((entry) => {
+    const endDate = entry.value?.endDate;
+    return Boolean(endDate) && isAvailabilityBlockExpired({ endDate });
   });
 
   return (
@@ -228,7 +243,13 @@ export function VehicleForm({
         <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <h3 className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">Blocked dates</h3>
-            <p className="theme-help text-sm">Add dates when the car should be unavailable.</p>
+            <p className="theme-help text-sm">
+              {locale === "uz"
+                ? "Kelgusi yoki joriy band qilingan sanalarni boshqaring. O'tgan bloklar pastdagi tarix bo'limida saqlanadi."
+                : locale === "ru"
+                  ? "Управляйте текущими и будущими блокировками. Прошедшие блоки остаются в истории ниже."
+                  : "Manage current and upcoming blocked dates here. Past blocks stay in the history section below."}
+            </p>
           </div>
           <button
             type="button"
@@ -239,21 +260,58 @@ export function VehicleForm({
           </button>
         </div>
         <div className="space-y-3">
-          {fields.map((field, index) => (
-            <div key={field.id} className="grid gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-700 xl:grid-cols-[1fr_1fr_2fr_auto]">
-              <input {...register(`availabilityBlocks.${index}.startDate`)} type="date" className="input" />
-              <input {...register(`availabilityBlocks.${index}.endDate`)} type="date" className="input" />
-              <input {...register(`availabilityBlocks.${index}.reason`)} placeholder="Reason" className="input" />
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                className="btn-danger rounded-full px-4 py-2 text-sm font-semibold transition"
-              >
-                Remove
-              </button>
+          {currentAndFutureEntries.length ? (
+            currentAndFutureEntries.map(({ field, index }) => (
+              <div key={field.id} className="grid gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-700 xl:grid-cols-[1fr_1fr_2fr_auto]">
+                <input {...register(`availabilityBlocks.${index}.startDate`)} type="date" className="input" />
+                <input {...register(`availabilityBlocks.${index}.endDate`)} type="date" className="input" />
+                <input {...register(`availabilityBlocks.${index}.reason`)} placeholder="Reason" className="input" />
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="btn-danger rounded-full px-4 py-2 text-sm font-semibold transition"
+                >
+                  Remove
+                </button>
+              </div>
+            ))
+          ) : (
+            <div className="rounded-2xl border border-dashed border-slate-300 px-4 py-5 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+              {locale === "uz"
+                ? "Kelgusi band qilingan sanalar yo'q."
+                : locale === "ru"
+                  ? "Нет предстоящих недоступных дат."
+                  : "No upcoming unavailable blocks."}
             </div>
-          ))}
+          )}
         </div>
+        {pastEntries.length ? (
+          <details className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-slate-700 dark:bg-slate-950">
+            <summary className="cursor-pointer text-sm font-semibold text-slate-700 dark:text-slate-300">
+              {locale === "uz"
+                ? `O'tgan bloklar tarixi (${pastEntries.length})`
+                : locale === "ru"
+                  ? `История прошедших блоков (${pastEntries.length})`
+                  : `Past blocks history (${pastEntries.length})`}
+            </summary>
+            <div className="mt-4 space-y-3">
+              {pastEntries.map(({ field, index }) => (
+                <div key={field.id} className="grid gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-700 xl:grid-cols-[1fr_1fr_2fr_auto]">
+                  <input {...register(`availabilityBlocks.${index}.startDate`)} type="date" className="input" />
+                  <input {...register(`availabilityBlocks.${index}.endDate`)} type="date" className="input" />
+                  <input {...register(`availabilityBlocks.${index}.reason`)} placeholder="Reason" className="input" />
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="btn-danger rounded-full px-4 py-2 text-sm font-semibold transition"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          </details>
+        ) : null}
       </div>
 
       <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">

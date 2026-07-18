@@ -8,7 +8,7 @@ import { BookingCard } from "@/components/booking-card";
 import { CarGallery } from "@/components/car-gallery";
 import { ReviewCard } from "@/components/review-card";
 import { StatusBadge } from "@/components/status-badge";
-import { getDisabledDateIntervals } from "@/lib/availability";
+import { getCurrentAndFutureAvailabilityBlocks, getDisabledDateIntervals } from "@/lib/availability";
 import { getCurrentUser } from "@/lib/auth";
 import { canRevealVehicleSensitiveDetails } from "@/lib/booking-visibility";
 import { getCategoryLabel, getCurrentLocale, getDictionary, getFuelTypeLabel, getTransmissionLabel } from "@/lib/i18n";
@@ -47,6 +47,7 @@ export default async function CarDetailPage({
     bookings: vehicle.bookings,
     blocks: vehicle.availabilityBlocks,
   });
+  const currentAndFutureBlocks = getCurrentAndFutureAvailabilityBlocks(vehicle.availabilityBlocks);
 
   const initialLocation = readQueryValue(query.location) || readQueryValue(query.city);
   const initialStartDate = readQueryValue(query.fromDate) || readQueryValue(query.startDate);
@@ -227,8 +228,8 @@ export default async function CarDetailPage({
         <div className="surface-card rounded-[2rem] p-6 dark:bg-slate-900">
           <h3 className="text-lg font-black tracking-tight text-slate-950 dark:text-slate-50">{labels.unavailableBlocks}</h3>
           <div className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-            {vehicle.availabilityBlocks.length ? (
-              vehicle.availabilityBlocks.map((block) => (
+            {currentAndFutureBlocks.length ? (
+              currentAndFutureBlocks.map((block) => (
                 <div key={block.id} className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
                   <p className="font-semibold text-slate-900 dark:text-slate-50">{block.reason}</p>
                   <p className="mt-1">
@@ -237,7 +238,13 @@ export default async function CarDetailPage({
                 </div>
               ))
             ) : (
-              <p>{locale === "uz" ? "Hozircha qo'lda bloklangan sana yo'q." : locale === "ru" ? "Пока нет вручную заблокированных дат." : "No manually blocked dates right now."}</p>
+              <p>
+                {locale === "uz"
+                  ? "Kelgusi band qilingan sanalar yo'q."
+                  : locale === "ru"
+                    ? "Нет предстоящих недоступных дат."
+                    : "No upcoming unavailable blocks."}
+              </p>
             )}
           </div>
         </div>

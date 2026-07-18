@@ -1,11 +1,39 @@
 import { BookingStatus, BookingType, KycStatus, Role, VehicleStatus } from "@prisma/client";
 
+import { startOfDay } from "date-fns";
+
 import { validateRentalPeriod } from "@/lib/pricing";
 
 type DateLike = Date | string;
+type DateRangeLike = { endDate: DateLike };
 
 export function asDate(value: DateLike) {
   return value instanceof Date ? value : new Date(value);
+}
+
+export function getStartOfToday(now = new Date()) {
+  return startOfDay(now);
+}
+
+export function isAvailabilityBlockExpired(
+  block: DateRangeLike,
+  now = new Date(),
+) {
+  return startOfDay(asDate(block.endDate)) < getStartOfToday(now);
+}
+
+export function isAvailabilityBlockActiveOrFuture(
+  block: DateRangeLike,
+  now = new Date(),
+) {
+  return !isAvailabilityBlockExpired(block, now);
+}
+
+export function getCurrentAndFutureAvailabilityBlocks<T extends DateRangeLike>(
+  blocks: T[],
+  now = new Date(),
+) {
+  return blocks.filter((block) => isAvailabilityBlockActiveOrFuture(block, now));
 }
 
 export function checkDateOverlap(
@@ -45,11 +73,16 @@ export function getDisabledDateIntervals(params: {
   bookings: Array<{ startDate: DateLike; endDate: DateLike; status: BookingStatus }>;
   blocks: Array<{ startDate: DateLike; endDate: DateLike }>;
 }) {
+  const today = getStartOfToday();
   const bookingRanges = params.bookings
-    .filter((booking) => isBlockingBookingStatus(booking.status))
+    .filter(
+      (booking) =>
+        isBlockingBookingStatus(booking.status) &&
+        startOfDay(asDate(booking.endDate)) >= today,
+    )
     .map((booking) => ({ from: asDate(booking.startDate), to: asDate(booking.endDate) }));
 
-  const blockRanges = params.blocks.map((block) => ({
+  const blockRanges = getCurrentAndFutureAvailabilityBlocks(params.blocks, today).map((block) => ({
     from: asDate(block.startDate),
     to: asDate(block.endDate),
   }));
