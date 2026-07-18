@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Role } from "@prisma/client";
-import { ArrowRight, Building2, Check, MapPinned, Plane, Sparkles, Truck, WalletCards } from "lucide-react";
+import { ArrowRight, Building2, Check, Plane, Sparkles, Truck, WalletCards } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { FeaturedVehiclesStrip } from "@/components/featured-vehicles-strip";
@@ -47,12 +47,6 @@ export default async function Home() {
       label: labels.quickMonthly,
       href: "/search?filter=monthly",
       icon: <WalletCards className="h-4 w-4" />,
-    },
-    {
-      key: "nearby",
-      label: labels.quickNearby,
-      href: "/search?filter=nearby",
-      icon: <MapPinned className="h-4 w-4" />,
     },
     {
       key: "delivered",

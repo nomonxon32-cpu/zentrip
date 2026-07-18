@@ -56,7 +56,7 @@ export type SearchFilter =
   | "all"
   | "airports"
   | "monthly"
-  | "nearby"
+  | "same-city"
   | "delivered"
   | "cities";
 
@@ -196,7 +196,11 @@ export async function searchVehicles(filters: {
   });
 
   const filteredByLocation = normalizedLocation
-    ? vehicles.filter((vehicle) => matchesLocation(vehicle, normalizedLocation))
+    ? vehicles.filter((vehicle) =>
+        queryFilter === "same-city"
+          ? matchesSameCity(vehicle, normalizedLocation)
+          : matchesLocation(vehicle, normalizedLocation),
+      )
     : vehicles;
 
   const filteredByQuery = normalizedQuery
@@ -224,10 +228,6 @@ export async function searchVehicles(filters: {
     filters.startDate && filters.endDate
       ? decorated.filter((vehicle) => vehicle.isAvailable)
       : decorated;
-
-  if (queryFilter === "nearby" && normalizedLocation) {
-    filtered = filtered.filter((vehicle) => matchesLocation(vehicle, normalizedLocation));
-  }
 
   const rentalDays =
     filters.startDate && filters.endDate
@@ -320,4 +320,17 @@ function matchesLocation(
   return [vehicle.city, vehicle.address]
     .filter(Boolean)
     .some((value) => value.toLowerCase().includes(normalizedQuery));
+}
+
+function matchesSameCity(
+  vehicle: Pick<VehicleCardRecord, "city">,
+  location: string,
+) {
+  const normalizedQuery = normalizeCityParam(location) ?? location.trim();
+  if (!normalizedQuery) {
+    return true;
+  }
+
+  const normalizedVehicleCity = normalizeCityParam(vehicle.city) ?? vehicle.city.trim();
+  return normalizedVehicleCity.toLowerCase() === normalizedQuery.toLowerCase();
 }

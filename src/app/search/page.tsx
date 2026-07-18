@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { differenceInCalendarDays } from "date-fns";
 import { Building2, MapPinned, Plane, Sparkles, Truck, WalletCards } from "lucide-react";
+import { redirect } from "next/navigation";
 
 import { CarCard } from "@/components/car-card";
 import { CarNameSearch } from "@/components/car-name-search";
@@ -38,6 +39,7 @@ export default async function SearchPage({
 
   const rawCity = asString(params.city);
   const rawLocation = asString(params.location) || rawCity;
+  const rawFilter = asString(params.filter);
   const rawStartDate = asString(params.startDate);
   const rawEndDate = asString(params.endDate);
   const rawFromDate = asString(params.fromDate) || rawStartDate;
@@ -45,7 +47,10 @@ export default async function SearchPage({
   const rawFromTime = asString(params.fromTime);
   const rawUntilTime = asString(params.untilTime);
   const q = asString(params.q).trim();
-  const filter = normalizeFilter(asString(params.filter));
+  if (rawFilter === "nearby" || (rawFilter === "same-city" && !rawLocation.trim())) {
+    redirect(buildSearchHref(params, { filter: "" }));
+  }
+  const filter = normalizeFilter(rawFilter);
   const location = normalizeCityParam(rawLocation) ?? rawLocation;
   const parsedStartDate = parseDateParam(rawFromDate);
   const parsedEndDate = parseDateParam(rawUntilDate);
@@ -104,13 +109,17 @@ export default async function SearchPage({
       icon: <WalletCards className="h-4 w-4" />,
       active: filter === "monthly",
     },
-    {
-      key: "nearby",
-      label: labels.quickNearby,
-      href: buildSearchHref(params, { filter: "nearby" }),
-      icon: <MapPinned className="h-4 w-4" />,
-      active: filter === "nearby",
-    },
+    ...(location
+      ? [
+          {
+            key: "same-city",
+            label: labels.quickSameCity,
+            href: buildSearchHref(params, { filter: "same-city" }),
+            icon: <MapPinned className="h-4 w-4" />,
+            active: filter === "same-city",
+          },
+        ]
+      : []),
     {
       key: "delivered",
       label: labels.quickDelivered,
@@ -360,7 +369,7 @@ function normalizeFilter(value: string): SearchFilter {
   if (
     value === "airports" ||
     value === "monthly" ||
-    value === "nearby" ||
+    value === "same-city" ||
     value === "delivered" ||
     value === "cities"
   ) {
