@@ -40,6 +40,14 @@ export async function PATCH(
       return NextResponse.json({ error: "Listing not found." }, { status: 404 });
     }
 
+    if (body.action === "REJECT" && !body.rejectionReason?.trim()) {
+      return NextResponse.json({ error: "A rejection reason is required." }, { status: 400 });
+    }
+
+    if (body.action === "DEACTIVATE" && vehicle.status !== VehicleStatus.ACTIVE) {
+      return NextResponse.json({ error: "Only active listings can be deactivated." }, { status: 400 });
+    }
+
     if (body.action === "APPROVE" && vehicle.owner.isSuspended) {
       return NextResponse.json({ error: "Suspended owners cannot have active listings." }, { status: 400 });
     }
@@ -59,7 +67,10 @@ export async function PATCH(
       where: { id },
       data: {
         status: nextStatus,
-        rejectionReason: body.action === "REJECT" ? body.rejectionReason ?? "Listing did not meet review requirements." : null,
+        rejectionReason:
+          body.action === "REJECT"
+            ? body.rejectionReason?.trim() ?? "Listing did not meet review requirements."
+            : null,
       },
     });
 
