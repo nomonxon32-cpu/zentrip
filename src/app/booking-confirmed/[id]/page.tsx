@@ -52,7 +52,7 @@ export default async function BookingConfirmedPage({
         </p>
         <div className="mt-6 flex flex-wrap gap-2">
           <StatusBadge value={booking.status} />
-          <CashPaymentBadge />
+          <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
         </div>
         <div className="mt-8">
           <PriceBreakdown

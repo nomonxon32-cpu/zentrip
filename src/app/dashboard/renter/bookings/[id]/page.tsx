@@ -11,6 +11,7 @@ import { ReviewForm } from "@/components/forms/review-form";
 import { RenterBookingActions } from "@/components/dashboard/renter-booking-actions";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
+import { getCashPaymentDisplayLabel, getCashPaymentDisplayState } from "@/lib/booking-payment-display";
 import { isSensitiveBookingDetailsVisible } from "@/lib/booking-visibility";
 import { db } from "@/lib/db";
 import { getCurrentLocale, getDictionary } from "@/lib/i18n";
@@ -64,6 +65,13 @@ export default async function RenterBookingDetailPage({
       ? `${formatDate(booking.startDate)} · ${booking.startTime} - ${booking.endTime}`
       : `${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`;
   const pickupAddress = booking.pickupLocation?.trim() || booking.vehicle.address;
+  const cashPaymentLabel = getCashPaymentDisplayLabel(
+    labels,
+    getCashPaymentDisplayState({
+      bookingStatus: booking.status,
+      paymentStatus: booking.paymentStatus,
+    }),
+  );
 
   return (
     <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-8 lg:px-8">
@@ -84,11 +92,7 @@ export default async function RenterBookingDetailPage({
             <StatusBadge value={booking.status} />
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
-            <CashPaymentBadge
-              settled={
-                booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED
-              }
-            />
+            <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
             <RenterBookingActions bookingId={booking.id} status={booking.status} />
           </div>
         </div>
@@ -128,7 +132,7 @@ export default async function RenterBookingDetailPage({
               <DetailRow label={labels.plate} value={booking.vehicle.plateNumber} />
               <DetailRow label={labels.ownerContact} value={`${booking.owner.name} · ${booking.owner.phone}`} />
               <DetailRow label={labels.timeWindow} value={tripWindow} />
-              <DetailRow label={labels.paymentMethodLabel} value={`${labels.cashPayment} · ${labels.payAtPickup}`} />
+              <DetailRow label={labels.paymentMethodLabel} value={`${labels.cashPayment} · ${cashPaymentLabel}`} />
               <DetailRow label={labels.depositDueAtPickup} value={formatCurrency(booking.depositAmount)} />
 
               {booking.vehicle.pickupInstructions ? (

@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/empty-state";
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
 import { getBookingPayableTotal } from "@/lib/booking-finance";
+import { getCashPaymentDisplayLabel, getCashPaymentDisplayState } from "@/lib/booking-payment-display";
 import { db } from "@/lib/db";
 import { getCurrentLocale, getDictionary, getStatusLabel } from "@/lib/i18n";
 import { formatCurrency } from "@/lib/utils";
@@ -71,6 +72,13 @@ export default async function AdminBookingsPage({
           <div className="space-y-4 lg:hidden">
             {bookings.map((booking) => {
               const payableTotal = getBookingPayableTotal(booking);
+              const cashPaymentLabel = getCashPaymentDisplayLabel(
+                labels,
+                getCashPaymentDisplayState({
+                  bookingStatus: booking.status,
+                  paymentStatus: booking.paymentStatus,
+                }),
+              );
 
               return (
                 <div key={booking.id} className="surface-card rounded-[2rem] p-5 dark:bg-slate-900">
@@ -85,19 +93,14 @@ export default async function AdminBookingsPage({
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <StatusBadge value={booking.status} />
-                      <CashPaymentBadge
-                        settled={
-                          booking.status === BookingStatus.ACTIVE ||
-                          booking.status === BookingStatus.COMPLETED
-                        }
-                      />
+                      <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
                     </div>
                   </div>
 
                   <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
                     <InfoRow label={labels.renter} value={`${booking.renter.name} / ${booking.renter.email}`} />
                     <InfoRow label={labels.owner} value={`${booking.owner.name} / ${booking.owner.email}`} />
-                    <InfoRow label={labels.paymentStatus} value={labels.cashPayment} />
+                    <InfoRow label={labels.paymentStatus} value={cashPaymentLabel} />
                     <InfoRow label={labels.totalPayable} value={formatCurrency(payableTotal)} />
                   </div>
                 </div>
@@ -110,6 +113,13 @@ export default async function AdminBookingsPage({
               columns={[labels.vehicleDetails, labels.renter, labels.owner, labels.currentStatus, labels.paymentStatus, labels.totalPayable]}
               rows={bookings.map((booking) => {
                 const payableTotal = getBookingPayableTotal(booking);
+                const cashPaymentLabel = getCashPaymentDisplayLabel(
+                  labels,
+                  getCashPaymentDisplayState({
+                    bookingStatus: booking.status,
+                    paymentStatus: booking.paymentStatus,
+                  }),
+                );
 
                 return [
                   <div key={`${booking.id}-vehicle`} className="space-y-1">
@@ -127,15 +137,10 @@ export default async function AdminBookingsPage({
                     <p className="text-xs text-slate-500 dark:text-slate-400">{booking.owner.email}</p>
                   </div>,
                   <StatusBadge key={`${booking.id}-status`} value={booking.status} />,
-                  <CashPaymentBadge
-                    key={`${booking.id}-payment-status`}
-                    settled={
-                      booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED
-                    }
-                  />,
+                  <CashPaymentBadge key={`${booking.id}-payment-status`} bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />,
                   <div key={`${booking.id}-amount`}>
                     <p className="font-semibold text-slate-950 dark:text-slate-50">{formatCurrency(payableTotal)}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{labels.cashPayment}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{cashPaymentLabel}</p>
                   </div>,
                 ];
               })}

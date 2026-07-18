@@ -119,12 +119,7 @@ export default async function RenterBookingsPage() {
                           </div>
                           <div className="flex flex-wrap gap-2">
                             <StatusBadge value={booking.status} />
-                            <CashPaymentBadge
-                              settled={
-                                booking.status === BookingStatus.ACTIVE ||
-                                booking.status === BookingStatus.COMPLETED
-                              }
-                            />
+                            <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
                           </div>
                         </div>
 

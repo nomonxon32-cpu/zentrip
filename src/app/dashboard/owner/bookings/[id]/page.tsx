@@ -1,4 +1,4 @@
-import { BookingStatus, Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import { notFound } from "next/navigation";
 
 import { BackButton } from "@/components/back-button";
@@ -11,6 +11,7 @@ import { OwnerBookingActions } from "@/components/dashboard/owner-booking-action
 import { StatusBadge } from "@/components/status-badge";
 import { requireRole } from "@/lib/auth";
 import { getBookingPayableTotal } from "@/lib/booking-finance";
+import { getCashPaymentDisplayLabel, getCashPaymentDisplayState } from "@/lib/booking-payment-display";
 import { getCurrentLocale, getDictionary } from "@/lib/i18n";
 import { getOwnerBookingById } from "@/lib/owner-bookings";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -34,8 +35,21 @@ export default async function OwnerBookingDetailPage({
   const driverLicense = booking.renter.kycDocuments[0] ?? null;
   const vehicleCover = booking.vehicle.photos[0]?.url;
   const payableTotal = getBookingPayableTotal(booking);
-  const paymentSettled =
-    booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED;
+  const cashPaymentState = getCashPaymentDisplayState({
+    bookingStatus: booking.status,
+    paymentStatus: booking.paymentStatus,
+  });
+  const cashPaymentLabel = getCashPaymentDisplayLabel(labels, cashPaymentState);
+  const paymentMethodDescription =
+    cashPaymentState === "NO_PAYMENT_DUE"
+      ? labels.noPaymentDue
+      : cashPaymentState === "CASH_PAYMENT_STATUS_UNKNOWN"
+        ? labels.cashPaymentStatusUnknown
+        : cashPaymentState === "CASH_AFTER_APPROVAL"
+          ? labels.cashPaymentAfterApproval
+          : cashPaymentState === "PAID_IN_CASH"
+            ? labels.paidInCash
+            : labels.payAtPickupDetail;
 
   return (
     <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-8 lg:px-8">
@@ -56,7 +70,7 @@ export default async function OwnerBookingDetailPage({
             </div>
             <div className="flex flex-wrap gap-2">
               <StatusBadge value={booking.status} />
-              <CashPaymentBadge settled={paymentSettled} />
+              <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
             </div>
           </div>
           <div className="mt-6 grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2 xl:grid-cols-4">
@@ -148,7 +162,7 @@ export default async function OwnerBookingDetailPage({
               <StatusBadge value={booking.renter.kycStatus} />
             </div>
             <div>
-              <CashPaymentBadge settled={paymentSettled} />
+              <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
             </div>
           </div>
         </div>
@@ -167,7 +181,7 @@ export default async function OwnerBookingDetailPage({
             <div className="mt-5 space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                    <p className="theme-label mb-2 text-sm font-semibold">Front image</p>
+                  <p className="theme-label mb-2 text-sm font-semibold">Front image</p>
                   <img
                     src={driverLicense.frontImageUrl}
                     alt={`${booking.renter.name} driver license front`}
@@ -184,7 +198,7 @@ export default async function OwnerBookingDetailPage({
                     />
                   </div>
                 ) : (
-                    <div className="surface-dashed rounded-2xl p-6 text-sm">
+                  <div className="surface-dashed rounded-2xl p-6 text-sm">
                     No back-side image uploaded
                   </div>
                 )}
@@ -208,12 +222,15 @@ export default async function OwnerBookingDetailPage({
           <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-4 text-sm dark:bg-slate-800">
             <div>
               <p className="font-semibold text-slate-950 dark:text-slate-50">{labels.cashPayment}</p>
-              <p className="mt-1 text-slate-500 dark:text-slate-400">{labels.payAtPickupDetail}</p>
+              <p className="mt-1 text-slate-500 dark:text-slate-400">{paymentMethodDescription}</p>
             </div>
-            <CashPaymentBadge settled={paymentSettled} />
+            <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
           </div>
           <p className="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
             {labels.totalPayable}: {formatCurrency(payableTotal)}
+          </p>
+          <p className="mt-2 text-xs uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+            {cashPaymentLabel}
           </p>
         </div>
 

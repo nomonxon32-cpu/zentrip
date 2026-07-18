@@ -8,6 +8,7 @@ import { OwnerBookingActions } from "@/components/dashboard/owner-booking-action
 import { useLocale } from "@/components/providers";
 import { StatusBadge } from "@/components/status-badge";
 import { getBookingPayableTotal } from "@/lib/booking-finance";
+import { getCashPaymentDisplayLabel, getCashPaymentDisplayState } from "@/lib/booking-payment-display";
 import { getStatusLabel } from "@/lib/i18n-dictionary";
 import type { OwnerBookingListRecord } from "@/lib/owner-bookings";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -23,8 +24,13 @@ export function OwnerBookingRequestCard({
   const cover = booking.vehicle.photos[0]?.url;
   const dateRange = `${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`;
   const payableTotal = getBookingPayableTotal(booking);
-  const paymentSettled =
-    booking.status === BookingStatus.ACTIVE || booking.status === BookingStatus.COMPLETED;
+  const cashPaymentLabel = getCashPaymentDisplayLabel(
+    labels,
+    getCashPaymentDisplayState({
+      bookingStatus: booking.status,
+      paymentStatus: booking.paymentStatus,
+    }),
+  );
 
   if (compact) {
     return (
@@ -56,7 +62,7 @@ export function OwnerBookingRequestCard({
 
           <div className="flex flex-wrap gap-2">
             <StatusBadge value={booking.status} />
-            <CashPaymentBadge settled={paymentSettled} />
+            <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
           </div>
 
           <Link
@@ -102,7 +108,7 @@ export function OwnerBookingRequestCard({
             </div>
             <div className="flex flex-wrap gap-2">
               <StatusBadge value={booking.status} />
-              <CashPaymentBadge settled={paymentSettled} />
+              <CashPaymentBadge bookingStatus={booking.status} paymentStatus={booking.paymentStatus} />
             </div>
           </div>
 
@@ -116,7 +122,7 @@ export function OwnerBookingRequestCard({
 
           <div className="grid gap-3 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2 xl:grid-cols-4">
             <Info label={labels.kycStatus} value={getStatusLabel(locale, booking.renter.kycStatus)} />
-            <Info label={labels.paymentStatus} value={getStatusLabel(locale, booking.paymentStatus)} />
+            <Info label={labels.paymentStatus} value={cashPaymentLabel} />
             <Info label={labels.email} value={booking.renter.email} />
             <Info label={labels.phone} value={booking.renter.phone} />
             <Info label={labels.city} value={booking.renter.city || labels.any} />
